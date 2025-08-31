@@ -112,9 +112,9 @@ public class DBLOperations {
         // Build HTTP request using the correct Mule API
         HttpRequest request = HttpRequest.builder()
             .method("POST")
-            .uri(configuration.getApiUri())
+            .uri(connection.getApiUri() + "/datacrypt-nlp")
             .addHeader("Content-Type", "application/json")
-            .addHeader("x-api-key", configuration.getApiKey())
+            .addHeader("x-api-key", connection.getApiKey())
             .entity(new ByteArrayHttpEntity(jsonPayload.getBytes()))
             .build();
 

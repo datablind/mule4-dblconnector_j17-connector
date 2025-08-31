@@ -20,10 +20,7 @@ public class DBLConfiguration {
 	public String getEncryptionKey() {
 		  return encryptionKey;
 	}
-
-	/**
-		  * Optional Licence Key.
-	*/
+/* 
 @Parameter
 @DisplayName("DataGuardAPI Key")
 	private String apiKey;
@@ -37,5 +34,6 @@ public class DBLConfiguration {
 	public String getApiUri() {
 		return apiUri;
 	}
-
+*/
 }
+

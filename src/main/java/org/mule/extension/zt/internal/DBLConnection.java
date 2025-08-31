@@ -10,10 +10,14 @@ public final class DBLConnection {
 
   private final String id;
   private final HttpClient httpClient;
+  private final String apiKey;
+  private final String apiUri;
 
-  public DBLConnection(String id, HttpClient httpClient) {
+  public DBLConnection(String id, HttpClient httpClient, String apiUri, String apiKey) {
     this.id = id;
     this.httpClient = httpClient;
+    this.apiKey = apiKey;
+    this.apiUri = apiUri;
   }
 
   public String getId() {
@@ -26,5 +30,13 @@ public final class DBLConnection {
 
   public HttpClient getHttpClient() {
     return httpClient;
+  }
+
+  public String getApiKey() {
+    return apiKey;
+  }
+
+  public String getApiUri() {
+    return apiUri;
   }
 }
