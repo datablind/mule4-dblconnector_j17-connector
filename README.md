@@ -89,10 +89,10 @@ Encrypts JSON fields automatically using natural language processing to identify
 #### Example
 
 ```xml
-<dbl:encrypt-json-using-nlp config-ref="DataBlind_Config" connection-ref="DataBlind_Connection">
-    <dbl:sensitive-json>{"name":"John Doe","creditCard":"1234-5678-9012-3456","ssn":"123-45-6789"}</dbl:sensitive-json>
-    <dbl:tweak>nlp-tweak-value</dbl:tweak>
-</dbl:encrypt-json-using-nlp>
+<zt:encrypt-json-using-nlp config-ref="DataBlind_Config" connection-ref="DataBlind_Connection"
+    tweak="047474">
+    <zt:sensitive-json>{"name":"John Doe","creditCard":"1234-5678-9012-3456","ssn":"123-45-6789"}</zt:sensitive-json>
+</zt:encrypt-json-using-nlp>
 ```
 
 ### DecryptJson
@@ -112,11 +112,14 @@ Decrypts previously encrypted fields within a JSON document.
 #### Example
 
 ```xml
-<dbl:decrypt-json config-ref="DataBlind_Config">
-    <dbl:sensitive-fields>creditCard,ssn,email</dbl:sensitive-fields>
-    <dbl:encrypted-json>{"name":"John Doe","creditCard":"[ENCRYPTED]","ssn":"[ENCRYPTED]"}</dbl:encrypted-json>
-    <dbl:tweak>unique-tweak-value</dbl:tweak>
-</dbl:decrypt-json>
+<zt:decrypt-json config-ref="DataBlind_Config"
+    sensitive-fields = "{
+        'name' : 'FE:PersonName',
+        'ssn' : 'FE:SSN',
+        'creditCard' : 'AES:CREDIT_CARD'
+    }" tweak="047474">
+    <zt:encrypted-json>{"name":"John Doe","creditCard":"[ENCRYPTED]","ssn":"[ENCRYPTED]"}</zt:encrypted-json>
+</zt:decrypt-json>
 ```
 
 ### FilterJson
@@ -136,11 +139,10 @@ Reduces JSON data by filtering out sensitive information.
 #### Example
 
 ```xml
-<dbl:filter-json config-ref="DataBlind_Config">
-    <dbl:sensitive-fields>account.creditCard,ssn</dbl:sensitive-fields>
-    <dbl:sensitive-json>{"name":"John Doe","account":{"creditCard":"1234-5678-9012-3456"},"ssn":"123-45-6789"}</dbl:sensitive-json>
-    <dbl:operation>remove</dbl:operation>
-</dbl:filter-json>
+<zt:filter-json config-ref="DataBlind_Config"
+    sensitive-fields="account.creditCard,ssn,email" operation="remove">
+    <zt:sensitive-json>{"name":"John Doe","account":{"creditCard":"1234-5678-9012-3456"},"ssn":"123-45-6789"}</zt:sensitive-json>
+</zt:filter-json>
 ```
 
 ### OverrideToken
@@ -157,10 +159,8 @@ Generates an override token for users requiring authorization to access all orig
 #### Example
 
 ```xml
-<dbl:override-token config-ref="DataBlind_Config">
-    <dbl:passphrase>my-secure-passphrase</dbl:passphrase>
-    <dbl:expiration-secs>3600</dbl:expiration-secs>
-</dbl:override-token>
+<zt:override-token config-ref="DataBlind_Config"
+    passphrase="my-secure-passphrase" expiration-secs="3600">
 ```
 
 ### OverrideTokenWithNewKey
@@ -178,11 +178,8 @@ Generates an override token using a new encryption key.
 #### Example
 
 ```xml
-<dbl:override-token-with-new-key>
-    <dbl:key>new-encryption-key</dbl:key>
-    <dbl:passphrase>my-secure-passphrase</dbl:passphrase>
-    <dbl:expiration-secs>3600</dbl:expiration-secs>
-</dbl:override-token-with-new-key>
+<zt:override-token-with-new-key
+    key="new-encryption-key" passphrase="my-secure-passphrase" expiration-secs="3600">
 ```
 
 ## Error Handling
@@ -252,11 +249,14 @@ The DataBlind Connector provides comprehensive error handling with the following
     <http:listener config-ref="HTTP_Listener_config" path="/process-data"/>
     
     <!-- Encrypt sensitive fields -->
-    <dbl:encrypt-json config-ref="DataBlind_Config">
-        <dbl:sensitive-fields>creditCard,ssn,email</dbl:sensitive-fields>
-        <dbl:sensitive-json>#[payload]</dbl:sensitive-json>
-        <dbl:tweak>#[uuid()]</dbl:tweak>
-    </dbl:encrypt-json>
+    <zt:encrypt-json config-ref="DataBlind_Config"
+        sensitive-fields = "{
+            'name' : 'FE:PersonName',
+            'ssn' : 'FE:SSN',
+            'creditCard' : 'AES:CREDIT_CARD'
+        }" tweak="047474">
+        <zt:sensitive-json>#[payload]</zt:sensitive-json>
+    </zt:encrypt-json>
     
     <!-- Store encrypted data -->
     <db:insert config-ref="Database_Config">
@@ -290,11 +290,14 @@ output application/json
     </db:select>
     
     <!-- Decrypt data -->
-    <dbl:decrypt-json config-ref="DataBlind_Config">
-        <dbl:sensitive-fields>creditCard,ssn,email</dbl:sensitive-fields>
-        <dbl:encrypted-json>#[payload[0].data]</dbl:encrypted-json>
-        <dbl:tweak>#[payload[0].tweak]</dbl:tweak>
-    </dbl:decrypt-json>
+    <zt:decrypt-json config-ref="DataBlind_Config"
+        sensitive-fields = "{
+            'name' : 'FE:PersonName',
+            'ssn' : 'FE:SSN',
+            'creditCard' : 'AES:CREDIT_CARD'
+        }" tweak="047474">
+        <zt:encrypted-json>#[payload[0].data]</zt:encrypted-json>
+    </zt:decrypt-json>
     
     <!-- Return decrypted data -->
     <ee:transform>
@@ -315,11 +318,10 @@ payload]]></ee:set-payload>
     <http:listener config-ref="HTTP_Listener_config" path="/filter-data"/>
     
     <!-- Filter sensitive data -->
-    <dbl:filter-json config-ref="DataBlind_Config">
-        <dbl:sensitive-fields>account.creditCard,ssn,email</dbl:sensitive-fields>
-        <dbl:sensitive-json>#[payload]</dbl:sensitive-json>
-        <dbl:operation>remove</dbl:operation>
-    </dbl:filter-json>
+    <zt:filter-json config-ref="DataBlind_Config"
+        sensitive-fields="account.creditCard,ssn,email" operation="remove">
+        <zt:sensitive-json>#[payload]</zt:sensitive-json>
+    </zt:filter-json>
     
     <!-- Return filtered data -->
     <ee:transform>
