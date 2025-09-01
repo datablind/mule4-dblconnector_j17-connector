@@ -11,13 +11,12 @@ The DataBlind Connector offers the following key capabilities:
 - **NLP-Based Encryption**: Use natural language processing to automatically identify, encrypt & mask sensitive fields
 - **Data Filtering**: Reduce JSON data by filtering out sensitive information
 - **Token Management**: Generate and manage override tokens for enhanced security
-- **Local and Remote Processing**: Support for both local encryption and remote API-based processing
 
 ## Requirements
 
 | Requirement | Version |
 |-------------|---------|
-| Mule Runtime | 4.3.0 or later |
+| Mule Runtime | 4.6.0 or later |
 | Java | 17 |
 | DataBlind Library | 3.0.3 |
 
@@ -29,15 +28,14 @@ The DataBlind Connector offers the following key capabilities:
 
 | Name | Type | Description | Default Value | Required |
 |------|------|-------------|---------------|----------|
-| **Name** | String | The name for this configuration. Connectors reference the configuration with this name. | | ✓ |
-| **Connection** | [DataBlind Connection](#config_connection) | The connection types to provide to this configuration. | | ✓ |
+| **Connection** | [DataBlind Connection](#config_connection) | The connection parameters to provide to this configuration. | | ✓ |
 | **Encryption Key** | String | The encryption key used for data encryption and decryption operations. | | ✓ |
 
 #### Connection Types
 
 ##### DataBlind Connection
 
-A connection provider that manages HTTP client connections for remote DataBlind API operations.
+A connection provider that manages HTTP client connections for AI enabled remote DataBlind API operations.
 
 ###### Parameters
 
@@ -56,7 +54,7 @@ Encrypts specified fields within a JSON document using the configured encryption
 
 | Name | Type | Description | Default Value | Required |
 |------|------|-------------|---------------|----------|
-| **Sensitive Fields** | String | Json containing sensitive fields along with their data types (e.g., "creditCard,ssn,email") | | ✓ |
+| **Sensitive Fields** | String | Json containing sensitive fields along with their data types. |  | ✓ |
 | **Sensitive JSON** | String | The JSON document containing fields to be encrypted | | ✓ |
 | **Tweak** | String | A unique value used in the encryption process for additional security | | ✓ |
 | **OverRide Token** | String | Optional override token, allows an authorized user to retrieve the clear data | "NOTOKEN" | No |
@@ -65,11 +63,14 @@ Encrypts specified fields within a JSON document using the configured encryption
 #### Example
 
 ```xml
-<dbl:encrypt-json config-ref="DataBlind_Config">
-    <dbl:sensitive-fields>creditCard,ssn,email</dbl:sensitive-fields>
-    <dbl:sensitive-json>{"name":"John Doe","creditCard":"1234-5678-9012-3456","ssn":"123-45-6789"}</dbl:sensitive-json>
-    <dbl:tweak>unique-tweak-value</dbl:tweak>
-</dbl:encrypt-json>
+<zt:encrypt-json config-ref="DataBlind_Config"
+    sensitive-fields = "{
+        'name' : 'FE:PersonName',
+        'ssn' : "FE:SSN',
+        'creditCard' : 'AES:CREDIT_CARD'
+    }, tweak="047474" >
+    <zt:sensitive-json>{"name":"John Doe","creditCard":"1234-5678-9012-3456","ssn":"123-45-6789"}</zt:sensitive-json>
+</zt:encrypt-json>
 ```
 
 ### EncryptJsonUsingNLP
