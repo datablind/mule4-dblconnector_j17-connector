@@ -8,7 +8,7 @@ The DataBlind Connector offers the following key capabilities:
 
 - **JSON Field Encryption**: Encrypt specific fields within JSON documents
 - **JSON Field Decryption**: Decrypt previously encrypted JSON fields
-- **NLP-Based Encryption**: Use natural language processing to automatically identify sensitive fields
+- **NLP-Based Encryption**: Use natural language processing to automatically identify, encrypt & mask sensitive fields
 - **Data Filtering**: Reduce JSON data by filtering out sensitive information
 - **Token Management**: Generate and manage override tokens for enhanced security
 - **Local and Remote Processing**: Support for both local encryption and remote API-based processing
