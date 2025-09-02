@@ -285,4 +285,8 @@ For issues and questions related to the DataBlind Connector:
 
 ## License
 
-This connector is licensed under the MuleSoft connector license agreement. Please refer to the license file for detailed terms and conditions.
+This connector is proprietary software owned by ZTensor, Inc. All rights reserved.
+
+This software is licensed for commercial use only. Unauthorized copying, distribution, or use of this software, via any medium, is strictly prohibited.
+
+For licensing information, please contact ZTensor, Inc.
