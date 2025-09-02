@@ -10,7 +10,7 @@ The DataBlind Connector offers the following key capabilities:
 - **JSON Field Decryption**: Decrypt previously encrypted JSON fields
 - **NLP-Based Encryption**: Use natural language processing to automatically identify, encrypt & mask sensitive fields
 - **Data Filtering**: Reduce JSON data by filtering out sensitive information
-- **Token Management**: Generate and manage override tokens for enhanced security
+- **Token Management**: Generate and manage override tokens for enhanced authorization
 
 ## Requirements
 
@@ -244,99 +244,14 @@ The DataBlind Connector provides comprehensive error handling with the following
 
 ### Complete Flow Example
 
-```xml
-<flow name="secure-data-processing">
-    <http:listener config-ref="HTTP_Listener_config" path="/process-data"/>
-    
-    <!-- Encrypt sensitive fields -->
-    <zt:encrypt-json config-ref="DataBlind_Config"
-        sensitive-fields = "{
-            'name' : 'FE:PersonName',
-            'ssn' : 'FE:SSN',
-            'creditCard' : 'AES:CREDIT_CARD'
-        }" tweak="047474">
-        <zt:sensitive-json>#[payload]</zt:sensitive-json>
-    </zt:encrypt-json>
-    
-    <!-- Store encrypted data -->
-    <db:insert config-ref="Database_Config">
-        <db:sql>INSERT INTO secure_data (data, tweak) VALUES (:#[payload], :#[vars.tweak])</db:sql>
-    </db:insert>
-    
-    <!-- Return success response -->
-    <ee:transform>
-        <ee:message>
-            <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-    "status": "success",
-    "message": "Data encrypted and stored successfully"
-}]]></ee:set-payload>
-        </ee:message>
-    </ee:transform>
-</flow>
+Please refer to the following example project:
+
+```
+https://github.com/datablind/dblconnector_j17_demo
+
 ```
 
-### Decryption Flow Example
 
-```xml
-<flow name="data-retrieval">
-    <http:listener config-ref="HTTP_Listener_config" path="/retrieve-data/{id}"/>
-    
-    <!-- Retrieve encrypted data -->
-    <db:select config-ref="Database_Config">
-        <db:sql>SELECT data, tweak FROM secure_data WHERE id = :#[attributes.uriParams.id]</db:sql>
-    </db:select>
-    
-    <!-- Decrypt data -->
-    <zt:decrypt-json config-ref="DataBlind_Config"
-        sensitive-fields = "{
-            'name' : 'FE:PersonName',
-            'ssn' : 'FE:SSN',
-            'creditCard' : 'AES:CREDIT_CARD'
-        }" tweak="047474">
-        <zt:encrypted-json>#[payload[0].data]</zt:encrypted-json>
-    </zt:decrypt-json>
-    
-    <!-- Return decrypted data -->
-    <ee:transform>
-        <ee:message>
-            <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-payload]]></ee:set-payload>
-        </ee:message>
-    </ee:transform>
-</flow>
-```
-
-### Data Filtering Example
-
-```xml
-<flow name="data-filtering">
-    <http:listener config-ref="HTTP_Listener_config" path="/filter-data"/>
-    
-    <!-- Filter sensitive data -->
-    <zt:filter-json config-ref="DataBlind_Config"
-        sensitive-fields="account.creditCard,ssn,email" operation="remove">
-        <zt:sensitive-json>#[payload]</zt:sensitive-json>
-    </zt:filter-json>
-    
-    <!-- Return filtered data -->
-    <ee:transform>
-        <ee:message>
-            <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-    "status": "success",
-    "filtered_data": payload
-}]]></ee:set-payload>
-        </ee:message>
-    </ee:transform>
-</flow>
-```
 
 ## Troubleshooting
 
