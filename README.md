@@ -246,10 +246,7 @@ The DataBlind Connector provides comprehensive error handling with the following
 
 Please refer to the following example project:
 
-```
-https://github.com/datablind/dblconnector_j17_demo
-
-```
+[DataBlind Connector Demo Project](https://github.com/datablind/dblconnector_j17_demo)
 
 
 
