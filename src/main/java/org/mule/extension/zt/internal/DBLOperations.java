@@ -17,7 +17,7 @@ import org.mule.runtime.extension.api.annotation.param.display.Password;
 import org.mule.runtime.extension.api.annotation.param.display.Placement;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
-import org.mule.runtime.extension.api.annotation.values.OfValues;
+import org.mule.runtime.extension.api.annotation.execution.Execution;
 
 
 import org.mule.runtime.extension.api.annotation.Alias;
@@ -93,6 +93,7 @@ public class DBLOperations {
    * @throws ModuleException if encryption fails due to invalid parameters, key issues, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
    */
+  //@Execution(ExecutionType.CPU_INTENSIVE)
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("EncryptJson")
   public String encryptJson(@Config DBLConfiguration configuration,
@@ -149,6 +150,7 @@ public class DBLOperations {
    * @see DBLConnection#getApiKey()
    * @see DBLConnection#getHttpClient()
    */
+//  @Execution(Execution.BLOCKING)
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("EncryptJsonUsingNLP")
   public String encryptJsonUsingNLP(@Connection DBLConnection connection, @Config DBLConfiguration configuration,
