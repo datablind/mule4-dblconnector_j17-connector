@@ -13,16 +13,17 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<properties>
 		<munit.input.directory>src/test/munit</munit.input.directory>
 		<munit.output.directory>${basedir}/target/test-mule/munit</munit.output.directory>
-		<munit.extensions.maven.plugin.version>1.2.0</munit.extensions.maven.plugin.version>
-		<munit.version>3.1.0</munit.version>
-		<maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
+		<munit.extensions.maven.plugin.version>1.6.0</munit.extensions.maven.plugin.version>
+		<munit.version>3.5.0</munit.version>
+		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
 	  </properties>
 
 	<parent>
 		<groupId>org.mule.extensions</groupId>
 		<artifactId>mule-modules-parent</artifactId>
-		<version>1.9.0</version>
+		<version>1.9.7 </version>
 	</parent>
+
 	
 	<dependencies>
 		<dependency>
@@ -34,9 +35,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<groupId>com.ztensor</groupId>
 			<artifactId>datacrypt</artifactId>
 			<version>3.0.3</version>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 	</dependencies>
+
 	
 	<build>
 		<plugins>
@@ -89,6 +91,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 						<classifier>mule-plugin</classifier>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+					<useModulePath>false</useModulePath>
+					<useSystemClassLoader>false</useSystemClassLoader>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
