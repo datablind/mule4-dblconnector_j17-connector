@@ -183,9 +183,9 @@ public class DBLOperations {
         	    "  \"overRidePassPhrase\": \"%s\"\n" +
         	    "}", configuration.getEncryptionKey(), tweak, sensitiveJsonString, overRideToken, passPhrase);
     	
-        // Build HTTP request using the correct Mule API
+        // Build HTTP request using the configured timeout
         HttpRequestOptions requestOptions = HttpRequestOptions.builder()
-            .responseTimeout(30000)  // 30 seconds
+            .responseTimeout(connection.getApiRequestTimeout())
             .build();
         HttpRequest request = HttpRequest.builder()
             .method("POST")

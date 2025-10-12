@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.mule.runtime.http.api.HttpService;
 import org.mule.runtime.http.api.client.HttpClient;
 import org.mule.runtime.http.api.client.HttpClientConfiguration;
+import org.mule.runtime.http.api.client.HttpRequestOptions;
 import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
 import org.slf4j.Logger;
@@ -63,11 +64,11 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   }
 
   @Parameter
-  @Optional
-  @Summary("API Request Timeout")
-  @DisplayName("DataGuardAPI Key")
-  private String apiRequestTimeout;
-  public String getApiRequestTimeout() {
+  @Optional(defaultValue = "30000")
+  @Summary("HTTP Request Timeout in milliseconds")
+  @DisplayName("Request Timeout")
+  private Integer apiRequestTimeout;
+  public Integer getApiRequestTimeout() {
     return apiRequestTimeout;
   }
 
@@ -98,6 +99,9 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
         connection = new DBLConnection("Test", httpClient, apiUri, apiKey, apiRequestTimeout);
         if (apiUri != null || apiKey != null) {
             remoteConenctionRequired = true;
+            HttpRequestOptions requestOptions = HttpRequestOptions.builder()
+                .responseTimeout(apiRequestTimeout)
+                .build();
             HttpRequest request = HttpRequest.builder()
              .method("GET")
              .uri(apiUri + "/datacrypt-status")
@@ -105,7 +109,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
              .addHeader("x-api-key", apiKey)
              .build();
             httpClient.start();
-            httpResponse = httpClient.send(request);
+            httpResponse = httpClient.send(request, requestOptions);
             response = new String(httpResponse.getEntity().getContent().readAllBytes());
             LOGGER.info("DataGuard API Status: " + response);  
         }
