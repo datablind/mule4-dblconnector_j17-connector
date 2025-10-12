@@ -11,16 +11,11 @@ package org.mule.extension.zt.internal;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.param.Optional;
+import org.mule.runtime.extension.api.annotation.param.RefName;
 import org.mule.runtime.api.connection.ConnectionValidationResult;
-import org.mule.runtime.api.connection.PoolingConnectionProvider;
-import org.mule.runtime.api.exception.MuleException;
-import org.mule.runtime.api.meta.ExternalLibraryType;
-import org.mule.runtime.api.connection.ConnectionProvider;
 import org.mule.runtime.api.connection.CachedConnectionProvider;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
-import org.mule.runtime.extension.api.annotation.values.OfValues;
-import org.mule.runtime.extension.api.annotation.ExternalLib;
 import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.lifecycle.Stoppable;
 import javax.inject.Inject;
@@ -30,10 +25,6 @@ import org.mule.runtime.http.api.client.HttpClient;
 import org.mule.runtime.http.api.client.HttpClientConfiguration;
 import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
-import org.mule.runtime.http.api.domain.entity.ByteArrayHttpEntity;
-import org.mule.runtime.http.api.domain.message.request.HttpRequestBuilder;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +35,14 @@ import org.slf4j.LoggerFactory;
  * All connection related parameters (values required in order to create a connection) must be
  * declared in the connection providers.
  * <p>
- * This particular example is a {@link PoolingConnectionProvider} which declares that connections resolved by this provider
- * will be pooled and reused. There are other implementations like {@link CachedConnectionProvider} which lazily creates and
- * caches connections or simply {@link ConnectionProvider} if you want a new connection each time something requires one.
+ * This particular implementation uses {@link CachedConnectionProvider} which lazily creates and
+ * caches connections. This is required for connection providers that create HttpClient instances.
  */
 
-public class DBLConnectionProvider implements PoolingConnectionProvider<DBLConnection>, Startable, Stoppable {
+public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnection>, Startable, Stoppable {
+
+  @RefName
+  private String configName;
 
   @Parameter
   @Optional
@@ -67,6 +60,15 @@ public class DBLConnectionProvider implements PoolingConnectionProvider<DBLConne
   private String apiKey;
   public String getApiKey() {
     return apiKey;
+  }
+
+  @Parameter
+  @Optional
+  @Summary("API Request Timeout")
+  @DisplayName("DataGuardAPI Key")
+  private String apiRequestTimeout;
+  public String getApiRequestTimeout() {
+    return apiRequestTimeout;
   }
 
   @Inject
@@ -89,11 +91,11 @@ public class DBLConnectionProvider implements PoolingConnectionProvider<DBLConne
     String response = null;
     HttpResponse httpResponse = null;
     try {
-        // Create the HTTP client with a meaningful name for diagnostics
+        // Create the HTTP client with a name based on the configuration name
         HttpClientConfiguration.Builder builder = new HttpClientConfiguration.Builder();
-        builder.setName("datablind-http-client");
+        builder.setName(configName + "-http-client");
         httpClient = httpService.getClientFactory().create(builder.build());
-        connection = new DBLConnection("Test", httpClient, apiUri, apiKey);
+        connection = new DBLConnection("Test", httpClient, apiUri, apiKey, apiRequestTimeout);
         if (apiUri != null || apiKey != null) {
             remoteConenctionRequired = true;
             HttpRequest request = HttpRequest.builder()
@@ -113,7 +115,7 @@ public class DBLConnectionProvider implements PoolingConnectionProvider<DBLConne
         LOGGER.error(e.getStackTrace().toString());
         throw new ConnectionException("Operation datacrypt-status failed due to " , e );
     } 
-    if (remoteConenctionRequired) {
+    if (remoteConenctionRequired && httpResponse != null) {
        int statusCode = httpResponse.getStatusCode();
        if (statusCode >= 200 && statusCode < 300) {
               // Successful response

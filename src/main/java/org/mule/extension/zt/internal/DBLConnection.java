@@ -20,12 +20,14 @@ public final class DBLConnection {
   private final HttpClient httpClient;
   private final String apiKey;
   private final String apiUri;
+  private final String apiRequestTimeout;
 
-  public DBLConnection(String id, HttpClient httpClient, String apiUri, String apiKey) {
+  public DBLConnection(String id, HttpClient httpClient, String apiUri, String apiKey, String apiRequestTimeout) {
     this.id = id;
     this.httpClient = httpClient;
     this.apiKey = apiKey;
     this.apiUri = apiUri;
+    this.apiRequestTimeout = apiRequestTimeout;
   }
 
   public String getId() {
@@ -46,5 +48,9 @@ public final class DBLConnection {
 
   public String getApiUri() {
     return apiUri;
+  }
+
+  public String getApiRequestTimeout() {
+    return apiRequestTimeout;
   }
 }
