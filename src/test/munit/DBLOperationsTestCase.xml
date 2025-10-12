@@ -9,7 +9,7 @@
       http://www.mulesoft.org/schema/mule/zt http://www.mulesoft.org/schema/mule/zt/current/mule-zt.xsd">
 
     <zt:config name="zt-config" encryptionKey="1234567890123456">
-        <zt:connection apiUri="${uri}" apiKey="${apiKey}"/>
+        <zt:connection apiUri="${uri}" apiKey="${apiKey}" apiRequestTimeout="30000" />
     </zt:config>
 
     <munit:config name="zt-operations-test"/>
@@ -18,10 +18,11 @@
         <zt:encrypt-json config-ref="zt-config"
             sensitiveFields='{"name": "FE:PersonName"}'
             tweak="1234567890123456"
-            overRideToken="NOTOKEN"
-            passPhrase="NOPASSPHRASE">
+            overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
+            passPhrase="MYPASSPHRASE">
             <zt:sensitive-json><![CDATA[{"name":"John", "age":30}]]></zt:sensitive-json>
         </zt:encrypt-json>
+        <logger level="INFO" message="EncryptJson Output: #[payload]"/>
     </flow>
 
     <munit:test name="encryptJsonTest">
@@ -30,6 +31,7 @@
         </munit:execution>
         <munit:validation>
             <munit-tools:assert-that expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+            <logger level="INFO" message="MUnit Test Result - EncryptJson: #[payload]" />
             <!-- <munit-tools:assert-equals actual="#[payload]" expected="#['Hello!']"/> -->
         </munit:validation>
     </munit:test>
@@ -37,10 +39,11 @@
     <flow name="testEncryptJsonUsingNLPFlow">
         <zt:encrypt-json-using-nlp config-ref="zt-config"
             tweak="1234567890123456"
-            overRideToken="NOTOKEN"
+            overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
             passPhrase="NOPASSPHRASE">
             <zt:sensitive-json><![CDATA[{"name":"John", "age":30}]]></zt:sensitive-json>
         </zt:encrypt-json-using-nlp>
+        <logger level="INFO" message="EncryptJsonUsingNLP Output: #[payload]"/>
     </flow>
 
     <munit:test name="encryptJsonUsingNLPTest">
@@ -50,6 +53,45 @@
         <munit:validation>
             <munit-tools:assert-that expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
             <!-- <munit-tools:assert-equals actual="#[payload]" expected="#['Using Configuration [configId] with Connection id [aValue:100]']"/> -->
+        </munit:validation>
+    </munit:test>
+
+    <flow name="testFilterJsonFlow">
+        <zt:reduce-json config-ref="zt-config"
+            sensitiveFields="name,age"
+            operation="remove"
+            overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
+            passPhrase="MYPASSPHRASE">
+            <zt:sensitive-json><![CDATA[{"name":"John", "age":30, "city":"New York"}]]></zt:sensitive-json>
+        </zt:reduce-json>
+        <logger level="INFO" message="FilterJson Output: #[payload]"/>
+    </flow>
+
+    <munit:test name="filterJsonTest">
+        <munit:execution>
+            <flow-ref name="testFilterJsonFlow"/>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+            <!-- <munit-tools:assert-equals actual="#[payload]" expected="#['Filtered JSON result']"/> -->
+        </munit:validation>
+    </munit:test>
+
+    <flow name="testOverrideTokenFlow">
+        <zt:override-token config-ref="zt-config"
+            passPhrase="MYPASSPHRASE"
+            expirationSecs="3600">
+        </zt:override-token>
+        <logger level="INFO" message="OverrideToken Output: #[payload]"/>
+    </flow>
+
+    <munit:test name="overrideTokenTest">
+        <munit:execution>
+            <flow-ref name="testOverrideTokenFlow"/>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+            <!-- <munit-tools:assert-equals actual="#[payload]" expected="#['Generated token result']"/> -->
         </munit:validation>
     </munit:test>
 

@@ -34,6 +34,7 @@ import com.ztensor.util.json.*;
 import org.mule.runtime.http.api.HttpService;
 import org.mule.runtime.http.api.client.HttpClient;
 import org.mule.runtime.http.api.client.HttpClientConfiguration;
+import org.mule.runtime.http.api.client.HttpRequestOptions;
 import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
 import org.mule.runtime.http.api.domain.entity.ByteArrayHttpEntity;
@@ -41,6 +42,9 @@ import org.mule.runtime.http.api.domain.message.request.HttpRequestBuilder;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 /**
  * Container class for DataBlind connector operations.
  * 
@@ -89,16 +93,16 @@ public class DBLOperations {
    * @param tweak A unique value used in the encryption process for additional security
    * @param overRideToken Optional override token, allows an authorized user to retrieve the clear data (default: "NOTOKEN")
    * @param passPhrase Optional passphrase, allows an authorized user to retrieve the clear data (default: "NOPASSPHRASE")
-   * @return JSON string containing the encrypted and protected values 
+   * @return InputStream containing the encrypted and protected values as JSON
    * @throws ModuleException if encryption fails due to invalid parameters, key issues, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
    */
   //@Execution(ExecutionType.CPU_INTENSIVE)
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("EncryptJson")
-  public String encryptJson(@Config DBLConfiguration configuration,
+  public InputStream encryptJson(@Config DBLConfiguration configuration,
 		  @DisplayName("Sensitive Fields") @Expression(ExpressionSupport.SUPPORTED) String sensitiveFields,
-		  @Content @DisplayName("Sensitive JSON") @Expression(ExpressionSupport.SUPPORTED) String sensitiveJson,
+		  @Content @DisplayName("Sensitive JSON") InputStream sensitiveJson,
 		  @DisplayName("Tweak") @Expression(ExpressionSupport.SUPPORTED) String tweak, 
   		  @DisplayName("OverRide Token") 
   		  @Expression(ExpressionSupport.SUPPORTED) 
@@ -113,9 +117,10 @@ public class DBLOperations {
 	LOGGER.info(versionTag + " DataBlind EncryptJson" );    	
 
     try {    
+        String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
         KeyContext kc = new KeyContext("CipherWorks", "Admin", "1.0", configuration.getEncryptionKey().getBytes());
     	JsonDataCrypt jsonDataCrypt = new JsonDataCrypt(kc);
-    	response = jsonDataCrypt.transform( "Encrypt", tweak, sensitiveJson, sensitiveFields, overRideToken, passPhrase);
+    	response = jsonDataCrypt.transform( "Encrypt", tweak, sensitiveJsonString, sensitiveFields, overRideToken, passPhrase);
     }
     catch (Exception e) {
     	LOGGER.error("Excception, encryptJson failed " + e);
@@ -123,7 +128,7 @@ public class DBLOperations {
     	throw new ModuleException("Operation encryptJson failed due to " + e , DBLErrorProvider.DATACRYPT_ERROR);
 
     }
-    return response;
+    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
 
   /**
@@ -144,7 +149,7 @@ public class DBLOperations {
    * @param tweak A unique value used in the encryption process for additional security
    * @param overRideToken Optional override token, allows an authorized user to retrieve the clear data (default: "NOTOKEN")
    * @param passPhrase Optional passphrase, allows an authorized user to retrieve the clear data (default: "NOPASSPHRASE")
-   * @return JSON string containing the automatically encrypted and protected values
+   * @return InputStream containing the automatically encrypted and protected values as JSON
    * @throws ModuleException if encryption fails due to API communication issues, invalid parameters, or processing errors
    * @see DBLConnection#getApiUri()
    * @see DBLConnection#getApiKey()
@@ -153,8 +158,8 @@ public class DBLOperations {
 //  @Execution(Execution.BLOCKING)
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("EncryptJsonUsingNLP")
-  public String encryptJsonUsingNLP(@Connection DBLConnection connection, @Config DBLConfiguration configuration,
-		  @Content @DisplayName("Sensitive JSON") @Expression(ExpressionSupport.SUPPORTED) String sensitiveJson,
+  public InputStream encryptJsonUsingNLP(@Connection DBLConnection connection, @Config DBLConfiguration configuration,
+		  @Content @DisplayName("Sensitive JSON") InputStream sensitiveJson,
 		  @DisplayName("Tweak") @Expression(ExpressionSupport.SUPPORTED) String tweak, 
   		  @DisplayName("OverRide Token") 
   		  @Expression(ExpressionSupport.SUPPORTED) 
@@ -168,7 +173,7 @@ public class DBLOperations {
 	String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
 	LOGGER.info(versionTag + " DataBlind EncryptJsonUsingNLP" );    	
     try {    
-       
+        String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
         String jsonPayload = String.format(
         	    "{\n" +
         	    "  \"key\": \"%s\",\n" +
@@ -176,16 +181,12 @@ public class DBLOperations {
         	    "  \"data\": %s,\n" +
         	    "  \"overRideToken\": \"%s\",\n" +
         	    "  \"overRidePassPhrase\": \"%s\"\n" +
-        	    "}", configuration.getEncryptionKey(), tweak, sensitiveJson, overRideToken, passPhrase);
+        	    "}", configuration.getEncryptionKey(), tweak, sensitiveJsonString, overRideToken, passPhrase);
     	
-        // Create Mule HTTP client
-/*          HttpClientConfiguration clientConfig = new HttpClientConfiguration.Builder()
-            .setName("datablind-http-client")
-            .build();
-        HttpClient httpClient = httpService.getClientFactory().create(clientConfig);
-		httpClient.start();
-*/        
         // Build HTTP request using the correct Mule API
+        HttpRequestOptions requestOptions = HttpRequestOptions.builder()
+            .responseTimeout(30000)  // 30 seconds
+            .build();
         HttpRequest request = HttpRequest.builder()
             .method("POST")
             .uri(connection.getApiUri() + "/datacrypt-nlp")
@@ -194,8 +195,9 @@ public class DBLOperations {
             .entity(new ByteArrayHttpEntity(jsonPayload.getBytes()))
             .build();
 
+            
         // Execute request
-        HttpResponse httpResponse = connection.getHttpClient().send(request);
+        HttpResponse httpResponse = connection.getHttpClient().send(request, requestOptions);
         response = new String(httpResponse.getEntity().getContent().readAllBytes());
     }
     catch (Exception e) {
@@ -203,7 +205,7 @@ public class DBLOperations {
     	LOGGER.error(e.getStackTrace().toString());
     	throw new ModuleException("Operation encryptJsonUsingNLP failed due to " + e , DBLErrorProvider.DATACRYPT_ERROR);
     }
-    return response;
+    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
 
   /**
@@ -224,15 +226,15 @@ public class DBLOperations {
    * @param operation The filtering operation to perform ("remove" or "retain")
    * @param overRideToken Optional override token, allows an authorized user to retrieve all data (default: "NOTOKEN")
    * @param passPhrase Optional passphrase, allows an authorized user to retrieve all data (default: "NOPASSPHRASE")
-   * @return JSON string after filtering the requested fields
+   * @return InputStream containing the filtered JSON data
    * @throws ModuleException if filtering fails due to invalid parameters, operation issues, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
    */
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("reduceJson")
-  public String filterJson(@Config DBLConfiguration configuration,
+  public InputStream filterJson(@Config DBLConfiguration configuration,
 		  @DisplayName("Sensitive Fields") @Expression(ExpressionSupport.SUPPORTED) String sensitiveFields,
-		  @Content @DisplayName("Sensitive JSON") @Expression(ExpressionSupport.SUPPORTED) String sensitiveJson,
+		  @Content @DisplayName("Sensitive JSON") InputStream sensitiveJson,
 		  @DisplayName("Operation") @Expression(ExpressionSupport.SUPPORTED) String operation,
   		  @DisplayName("OverRide Token") 
   		  @Expression(ExpressionSupport.SUPPORTED) 
@@ -246,16 +248,17 @@ public class DBLOperations {
 	String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
 	LOGGER.info(versionTag + " DataBlind ReduceJson" );    	
     try {    
+        String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
         KeyContext kc = new KeyContext("CipherWorks", "Admin", "1.0", configuration.getEncryptionKey().getBytes());
         JsonDataCrypt jsonDataCrypt = new JsonDataCrypt(kc);
-    	response = jsonDataCrypt.reduceJson( operation, sensitiveJson, sensitiveFields, overRideToken, passPhrase);
+    	response = jsonDataCrypt.reduceJson( operation, sensitiveJsonString, sensitiveFields, overRideToken, passPhrase);
     }
     catch (Exception e) {
     	LOGGER.error("Excception, filterJson failed " + e);
     	LOGGER.error(e.getStackTrace().toString());
     	throw new ModuleException("Operation filterJson failed due to " + e , DBLErrorProvider.DATACRYPT_ERROR);
     }
-    return response;
+    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
 
   /**
@@ -276,16 +279,16 @@ public class DBLOperations {
    * @param tweak The tweak value used during encryption (must match exactly)
    * @param overRideToken Optional override token, allows an authorized user to retrieve the clear data (default: "NOTOKEN")
    * @param passPhrase Optional passphrase, allows an authorized user to retrieve the clear data (default: "NOPASSPHRASE")
-   * @return JSON string containing the decrypted and clear values
+   * @return InputStream containing the decrypted and clear values as JSON
    * @throws ModuleException if decryption fails due to key mismatch, invalid parameters, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
    * @see #encryptJson(DBLConfiguration, String, String, String, String, String)
    */
  @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("DecryptJson")
-  public String decryptJson(@Config DBLConfiguration configuration,
+  public InputStream decryptJson(@Config DBLConfiguration configuration,
 		  @DisplayName("Sensitive Fields") @Expression(ExpressionSupport.SUPPORTED) String sensitiveFields,
-		  @Content @DisplayName("Encrypted JSON") @Expression(ExpressionSupport.SUPPORTED) String encryptedJson,
+		  @Content @DisplayName("Encrypted JSON") InputStream encryptedJson,
 		  @DisplayName("Tweak") @Expression(ExpressionSupport.SUPPORTED) String tweak, 
 		  @DisplayName("OverRide Token") 
 		  @Expression(ExpressionSupport.SUPPORTED) 
@@ -299,16 +302,17 @@ public class DBLOperations {
 	String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
 	LOGGER.info(versionTag + " DataBlind DecryptJson" );    	
     try {  
+        String encryptedJsonString = new String(encryptedJson.readAllBytes(), StandardCharsets.UTF_8);
         KeyContext kc = new KeyContext("CipherWorks", "Admin", "1.0", configuration.getEncryptionKey().getBytes());
     	JsonDataCrypt jsonDataCrypt = new JsonDataCrypt(kc);
-    	response = jsonDataCrypt.transform( "Decrypt", tweak, encryptedJson, sensitiveFields, overRideToken, passPhrase);
+    	response = jsonDataCrypt.transform( "Decrypt", tweak, encryptedJsonString, sensitiveFields, overRideToken, passPhrase);
     }
     catch (Exception e) {
     	LOGGER.error("Excception, decryptJson failed " + e);
     	LOGGER.error(e.getStackTrace().toString());
     	throw new ModuleException("Operation decryptJson failed due to " + e , DBLErrorProvider.DATACRYPT_ERROR);
     }
-    return response;
+    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
 
   /**
@@ -326,7 +330,7 @@ public class DBLOperations {
    * @param configuration The DataBlind configuration containing the encryption key used for token generation
    * @param passPhrase The passphrase used to generate the token
    * @param expirationSecs The number of seconds until the token expires 
-   * @return JSON string containing the generated token
+   * @return InputStream containing the generated token as JSON
    * @throws ModuleException if token generation fails due to invalid parameters, key issues, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
    * @see #encryptJson(DBLConfiguration, String, String, String, String, String)
@@ -334,7 +338,7 @@ public class DBLOperations {
    */
  @MediaType(value = ANY, strict = false)
  @Alias("OverrideToken")
- public String overrideToken(@Config DBLConfiguration configuration,
+ public InputStream overrideToken(@Config DBLConfiguration configuration,
 		  @DisplayName("Passphrase") @Expression(ExpressionSupport.SUPPORTED) String passPhrase,
 		  @DisplayName("Expiration Seconds") @Expression(ExpressionSupport.SUPPORTED) Integer expirationSecs) {
    String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
@@ -349,7 +353,7 @@ public class DBLOperations {
    	LOGGER.error(e.getStackTrace().toString());
 	throw new ModuleException("Operation overrideToken failed due to " + e , DBLErrorProvider.DATACRYPT_ERROR);
    }
-   return response;
+   return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
  }
 
   /**
@@ -366,13 +370,13 @@ public class DBLOperations {
    * @param key The encryption key to use for token generation (must be valid and accessible)
    * @param passPhrase The passphrase used to generate the token
    * @param expirationSecs The number of seconds until the token expires (must be positive)
-   * @return JSON string containing the generated token
+   * @return InputStream containing the generated token as JSON
    * @throws ModuleException if token generation fails due to invalid key, parameters, or processing errors
    * @see #overrideToken(DBLConfiguration, String, Integer)
    */
  @MediaType(value = ANY, strict = false)
  @Alias("OverrideTokenWithNewKey")
- public String overrideTokenWithNewKey(
+ public InputStream overrideTokenWithNewKey(
 		  @DisplayName("Key") @Expression(ExpressionSupport.SUPPORTED) String key,
 		  @DisplayName("Passphrase") @Expression(ExpressionSupport.SUPPORTED) String passPhrase,
 		  @DisplayName("Expiration Seconds") @Expression(ExpressionSupport.SUPPORTED) Integer expirationSecs) {
@@ -388,7 +392,7 @@ public class DBLOperations {
    	LOGGER.error(e.getStackTrace().toString());
 	throw new ModuleException("Operation overrideTokenWithNewKey failed due to " + e , DBLErrorProvider.DATACRYPT_ERROR);
    }
-   return response;
+   return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
  }
 
 }
