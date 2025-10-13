@@ -3,9 +3,9 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<!--   <groupId>ANYPOINT_ORG_ID</groupId> -->
-	<groupId>a79366f6-f351-4a5e-9386-00c7ef207362</groupId>
+	<groupId>13c7cbe2-61a5-4740-9da0-ae298639b607</groupId>
 	<artifactId>DataBlind</artifactId>
-	<version>4.0.24</version>
+	<version>5.0.0</version>
 	<packaging>mule-extension</packaging>
 	<name>dblconnector_j17</name>
 

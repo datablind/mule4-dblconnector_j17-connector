@@ -16,6 +16,8 @@ import org.mule.runtime.api.connection.ConnectionValidationResult;
 import org.mule.runtime.api.connection.CachedConnectionProvider;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
+import org.mule.runtime.extension.api.annotation.param.display.Password;
+import org.mule.runtime.extension.api.annotation.param.display.Placement;
 import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.lifecycle.Stoppable;
 import javax.inject.Inject;
@@ -24,6 +26,7 @@ import org.mule.runtime.http.api.HttpService;
 import org.mule.runtime.http.api.client.HttpClient;
 import org.mule.runtime.http.api.client.HttpClientConfiguration;
 import org.mule.runtime.http.api.client.HttpRequestOptions;
+import org.mule.runtime.http.api.client.proxy.ProxyConfig;
 import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
 import org.slf4j.Logger;
@@ -72,6 +75,47 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
     return apiRequestTimeout;
   }
 
+  @Parameter
+  @Optional
+  @Summary("Proxy server host name")
+  @DisplayName("Proxy Host")
+  @Placement(tab = "Proxy")
+  private String proxyHost;
+  public String getProxyHost() {
+    return proxyHost;
+  }
+
+  @Parameter
+  @Optional(defaultValue = "8080")
+  @Summary("Proxy server port")
+  @DisplayName("Proxy Port")
+  @Placement(tab = "Proxy")
+  private Integer proxyPort;
+  public Integer getProxyPort() {
+    return proxyPort;
+  }
+
+  @Parameter
+  @Optional
+  @Summary("Proxy server username for authentication")
+  @DisplayName("Proxy Username")
+  @Placement(tab = "Proxy")
+  private String proxyUsername;
+  public String getProxyUsername() {
+    return proxyUsername;
+  }
+
+  @Parameter
+  @Optional
+  @Password
+  @Summary("Proxy server password for authentication")
+  @DisplayName("Proxy Password")
+  @Placement(tab = "Proxy")
+  private String proxyPassword;
+  public String getProxyPassword() {
+    return proxyPassword;
+  }
+
   @Inject
   private HttpService httpService;
 
@@ -95,7 +139,53 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
         // Create the HTTP client with a name based on the configuration name
         HttpClientConfiguration.Builder builder = new HttpClientConfiguration.Builder();
         builder.setName(configName + "-http-client");
+        
+        // Configure proxy if provided
+        if (proxyHost != null && !proxyHost.trim().isEmpty()) {
+            // Create a ProxyConfig implementation
+            final String finalProxyHost = proxyHost;
+            final Integer finalProxyPort = proxyPort;
+            final String finalProxyUsername = proxyUsername;
+            final String finalProxyPassword = proxyPassword;
+            
+            ProxyConfig proxyConfig = new ProxyConfig() {
+                @Override
+                public String getHost() {
+                    return finalProxyHost;
+                }
+                
+                @Override
+                public int getPort() {
+                    return finalProxyPort;
+                }
+                
+                @Override
+                public String getUsername() {
+                    return finalProxyUsername;
+                }
+                
+                @Override
+                public String getPassword() {
+                    return finalProxyPassword;
+                }
+                
+                @Override
+                public String getNonProxyHosts() {
+                    return null;  // No non-proxy hosts configured
+                }
+            };
+            
+            builder.setProxyConfig(proxyConfig);
+            if (proxyUsername != null && !proxyUsername.trim().isEmpty()) {
+                LOGGER.info("Proxy configured with authentication: " + proxyHost + ":" + proxyPort);
+            } else {
+                LOGGER.info("Proxy configured: " + proxyHost + ":" + proxyPort);
+            }
+        }
+        
         httpClient = httpService.getClientFactory().create(builder.build());
+        httpClient.start();
+        
         connection = new DBLConnection("Test", httpClient, apiUri, apiKey, apiRequestTimeout);
         if (apiUri != null || apiKey != null) {
             remoteConenctionRequired = true;
@@ -108,7 +198,6 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
              .addHeader("Content-Type", "application/json")
              .addHeader("x-api-key", apiKey)
              .build();
-            httpClient.start();
             httpResponse = httpClient.send(request, requestOptions);
             response = new String(httpResponse.getEntity().getContent().readAllBytes());
             LOGGER.info("DataGuard API Status: " + response);  
@@ -155,17 +244,17 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
 
   @Override
   public void start() {
-    try {
-      httpClient.start();
-    } catch (Exception e) {
-      LOGGER.error("Error while starting httpClient: " + e.getMessage(), e);
-    }
+    // HttpClient is started in the connect() method where it's created
+    // This method is called before connect() in the lifecycle, so nothing to do here
+    LOGGER.debug("DBLConnectionProvider started");
   }
 
   @Override
   public void stop() {
     try {
-      httpClient.stop();
+      if (httpClient != null) {
+        httpClient.stop();
+      }
     } catch (Exception e) {
       LOGGER.error("Error while stopping httpClient: " + e.getMessage(), e);
     }

@@ -282,7 +282,7 @@ public class DBLOperations {
    * @return InputStream containing the decrypted and clear values as JSON
    * @throws ModuleException if decryption fails due to key mismatch, invalid parameters, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
-   * @see #encryptJson(DBLConfiguration, String, String, String, String, String)
+   * @see #encryptJson(DBLConfiguration, String, InputStream, String, String, String)
    */
  @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("DecryptJson")
@@ -333,8 +333,8 @@ public class DBLOperations {
    * @return InputStream containing the generated token as JSON
    * @throws ModuleException if token generation fails due to invalid parameters, key issues, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
-   * @see #encryptJson(DBLConfiguration, String, String, String, String, String)
-   * @see #decryptJson(DBLConfiguration, String, String, String, String, String)
+   * @see #encryptJson(DBLConfiguration, String, InputStream, String, String, String)
+   * @see #decryptJson(DBLConfiguration, String, InputStream, String, String, String)
    */
  @MediaType(value = ANY, strict = false)
  @Alias("OverrideToken")
