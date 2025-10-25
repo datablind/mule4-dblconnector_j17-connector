@@ -16,11 +16,11 @@
 
     <flow name="testEncryptJsonFlow">
         <zt:encrypt-json config-ref="zt-config"
-            sensitiveFields='{"name": "FE:PersonName"}'
+            sensitiveFields='{"name": "FE:PersonName", "phoneNumber": "FE:PhoneNumber"}'
             tweak="1234567890123456"
             overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
             passPhrase="MYPASSPHRASE">
-            <zt:sensitive-json><![CDATA[{"name":"John", "age":30}]]></zt:sensitive-json>
+            <zt:sensitive-json><![CDATA[{"name":"John", "phoneNumber" : "1234567890" , "age":30}]]></zt:sensitive-json>
         </zt:encrypt-json>
         <logger level="INFO" message="EncryptJson Output: #[payload]"/>
     </flow>
@@ -41,7 +41,7 @@
             tweak="1234567890123456"
             overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
             passPhrase="NOPASSPHRASE">
-            <zt:sensitive-json><![CDATA[{"name":"John", "age":30}]]></zt:sensitive-json>
+            <zt:sensitive-json><![CDATA[{"name":"John", "phoneNumber" : "1234567890" , "age":30}]]></zt:sensitive-json>
         </zt:encrypt-json-using-nlp>
         <logger level="INFO" message="EncryptJsonUsingNLP Output: #[payload]"/>
     </flow>
