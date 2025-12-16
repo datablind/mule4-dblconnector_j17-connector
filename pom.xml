@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<!--   <groupId>ANYPOINT_ORG_ID</groupId> -->
-	<groupId>13c7cbe2-61a5-4740-9da0-ae298639b607</groupId>
+	<groupId>${anypoint.groupId}</groupId>
+	<!-- <groupId>13c7cbe2-61a5-4740-9da0-ae298639b607</groupId> -->
 	<artifactId>DataBlind</artifactId>
 	<version>5.0.1</version>
 	<packaging>mule-extension</packaging>
@@ -15,6 +15,7 @@
 		<munit.extensions.maven.plugin.version>1.6.0</munit.extensions.maven.plugin.version>
 		<munit.version>3.5.0</munit.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
+		<anypoint.groupId>13c7cbe2-61a5-4740-9da0-ae298639b607</anypoint.groupId>
 	  </properties>
 
 	<parent>
