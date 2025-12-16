@@ -28,6 +28,8 @@ import org.mule.runtime.extension.api.annotation.param.Config;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.api.meta.ExpressionSupport;
+import org.mule.runtime.api.meta.model.operation.ExecutionType;
+
 import com.ztensor.datacrypt.*;
 import com.ztensor.util.json.*;
 
@@ -97,7 +99,7 @@ public class DBLOperations {
    * @throws ModuleException if encryption fails due to invalid parameters, key issues, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
    */
-  //@Execution(ExecutionType.CPU_INTENSIVE)
+  @Execution(ExecutionType.CPU_INTENSIVE)
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("EncryptJson")
   public InputStream encryptJson(@Config DBLConfiguration configuration,
@@ -155,7 +157,7 @@ public class DBLOperations {
    * @see DBLConnection#getApiKey()
    * @see DBLConnection#getHttpClient()
    */
-//  @Execution(Execution.BLOCKING)
+  @Execution(ExecutionType.BLOCKING)
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("EncryptJsonUsingNLP")
   public InputStream encryptJsonUsingNLP(@Connection DBLConnection connection, @Config DBLConfiguration configuration,
@@ -230,6 +232,7 @@ public class DBLOperations {
    * @throws ModuleException if filtering fails due to invalid parameters, operation issues, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
    */
+  @Execution(ExecutionType.CPU_INTENSIVE)
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("reduceJson")
   public InputStream filterJson(@Config DBLConfiguration configuration,
@@ -284,7 +287,8 @@ public class DBLOperations {
    * @see DBLConfiguration#getEncryptionKey()
    * @see #encryptJson(DBLConfiguration, String, InputStream, String, String, String)
    */
- @MediaType(value = APPLICATION_JSON, strict = false)
+  @Execution(ExecutionType.CPU_INTENSIVE)
+  @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("DecryptJson")
   public InputStream decryptJson(@Config DBLConfiguration configuration,
 		  @DisplayName("Sensitive Fields") @Expression(ExpressionSupport.SUPPORTED) String sensitiveFields,
@@ -336,6 +340,7 @@ public class DBLOperations {
    * @see #encryptJson(DBLConfiguration, String, InputStream, String, String, String)
    * @see #decryptJson(DBLConfiguration, String, InputStream, String, String, String)
    */
+ @Execution(ExecutionType.CPU_INTENSIVE)
  @MediaType(value = ANY, strict = false)
  @Alias("OverrideToken")
  public InputStream overrideToken(@Config DBLConfiguration configuration,
@@ -374,6 +379,7 @@ public class DBLOperations {
    * @throws ModuleException if token generation fails due to invalid key, parameters, or processing errors
    * @see #overrideToken(DBLConfiguration, String, Integer)
    */
+ @Execution(ExecutionType.CPU_INTENSIVE)
  @MediaType(value = ANY, strict = false)
  @Alias("OverrideTokenWithNewKey")
  public InputStream overrideTokenWithNewKey(
