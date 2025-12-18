@@ -1,4 +1,16 @@
+/*
+ * Copyright 2025 ZTensor, Inc. All rights reserved.
+ * This software is proprietary and confidential. Unauthorized copying, 
+ * distribution, or use of this software, via any medium, is strictly prohibited.
+ * 
+ * This software is licensed for commercial use only. For licensing information,
+ * please contact ZTensor, Inc.
+ */
+
+ 
 package org.mule.extension.zt.internal;
+
+import org.mule.runtime.http.api.client.HttpClient;
 
 
 /**
@@ -7,9 +19,17 @@ package org.mule.extension.zt.internal;
 public final class DBLConnection {
 
   private final String id;
+  private final HttpClient httpClient;
+  private final String apiKey;
+  private final String apiUri;
+  private final Integer apiRequestTimeout;
 
-  public DBLConnection(String id) {
+  public DBLConnection(String id, HttpClient httpClient, String apiUri, String apiKey, Integer apiRequestTimeout) {
     this.id = id;
+    this.httpClient = httpClient;
+    this.apiKey = apiKey;
+    this.apiUri = apiUri;
+    this.apiRequestTimeout = apiRequestTimeout;
   }
 
   public String getId() {
@@ -18,5 +38,21 @@ public final class DBLConnection {
 
   public void invalidate() {
     // do something to invalidate this connection!
+  }
+
+  public HttpClient getHttpClient() {
+    return httpClient;
+  }
+
+  public String getApiKey() {
+    return apiKey;
+  }
+
+  public String getApiUri() {
+    return apiUri;
+  }
+
+  public Integer getApiRequestTimeout() {
+    return apiRequestTimeout;
   }
 }

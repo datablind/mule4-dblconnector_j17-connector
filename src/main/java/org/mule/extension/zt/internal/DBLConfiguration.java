@@ -1,9 +1,16 @@
+/*
+ * Copyright 2025 ZTensor, Inc. All rights reserved.
+ * This software is proprietary and confidential. Unauthorized copying, 
+ * distribution, or use of this software, via any medium, is strictly prohibited.
+ * 
+ * This software is licensed for commercial use only. For licensing information,
+ * please contact ZTensor, Inc.
+ */
 package org.mule.extension.zt.internal;
 
 import org.mule.runtime.extension.api.annotation.Operations;
 import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
-import org.mule.runtime.extension.api.annotation.values.OfValues;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 
 
@@ -21,10 +28,7 @@ public class DBLConfiguration {
 	public String getEncryptionKey() {
 		  return encryptionKey;
 	}
-
-	/**
-		  * Optional Licence Key.
-	*/
+/* 
 @Parameter
 @DisplayName("DataGuardAPI Key")
 	private String apiKey;
@@ -38,5 +42,6 @@ public class DBLConfiguration {
 	public String getApiUri() {
 		return apiUri;
 	}
-
+*/
 }
+

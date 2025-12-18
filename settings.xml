@@ -1,4 +1,4 @@
-<!-- settings.cpb.xml -->
+<!-- settings.dblind.xml -->
 
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -27,12 +27,12 @@
            <username>${anypoint_username}</username>
            <password>${anypoint_password}</password>
        </server>
-       <server>
+        <server>
            <id>MuleRepository</id>
            <username>${muleentrepo_username}</username>
            <password>${muleentrepo_password}</password>
-       </server>
-       <server>
+       </server>       
+        <server>
            <id>datablindrepo</id>
            <username>${dblrepo_username}</username>
            <password>${dblrepo_password}</password>
@@ -41,7 +41,7 @@
    </servers>
    <mirrors/>
    <profiles>
-       <profile>
+<!--       <profile>
            <id>Mule</id>
            <activation>
                <activeByDefault>true</activeByDefault>
@@ -58,9 +58,21 @@
                    <snapshots>
                        <enabled>true</enabled>
                    </snapshots>
+               </repository> 
+               <repository>
+                   <id>datablindrepo</id>
+                   <name>GitHub DataBlind Repository</name>
+                   <url>https://maven.pkg.github.com/datablind/datacrypt</url>
+                   <layout>default</layout>
+                   <releases>
+                       <enabled>true</enabled>
+                   </releases>
+                   <snapshots>
+                       <enabled>true</enabled>
+                   </snapshots>
                </repository>
            </repositories>
-       </profile>
+       </profile> -->
        <profile>
            <id>mule-extra-repos</id>
            <activation>

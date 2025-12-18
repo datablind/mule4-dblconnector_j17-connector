@@ -1,0 +1,84 @@
+name: Deploy to MuleSoft Exchange
+
+on:
+  push:
+    branches: [ main, dev ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - main
+
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Setup Maven
+      run: |
+        echo "Using built-in Maven from GitHub Actions runner"
+        mvn --version
+        
+    - name: Deploy to Dev Environment
+      if: github.ref == 'refs/heads/dev' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev')
+      env:
+        ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
+        ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
+        DBLREPO_USERNAME: ${{ secrets.DBLREPO_USERNAME }}
+        DBLREPO_PASSWORD: ${{ secrets.DBLREPO_PASSWORD }}
+        ANYPOINT_GROUP_ID: ${{ secrets.ANYPOINT_GROUP_ID }}
+      run: |
+        echo "${SHELL}"
+        echo "Checking secrets availability for deployment to Dev Environment:"
+        echo "ANYPOINT_USERNAME length: ${#ANYPOINT_USERNAME}"
+        echo "DBLREPO_USERNAME length: ${#DBLREPO_USERNAME}"
+        echo "ANYPOINT_PASSWORD length: ${#ANYPOINT_PASSWORD}"
+        echo "DBLREPO_PASSWORD length: ${#DBLREPO_PASSWORD}"
+        echo "ANYPOINT_GROUP_ID length: ${ANYPOINT_GROUP_ID}"
+        echo "Starting Maven deployment...."
+        mvn clean package deploy -s ./settings.xml -DskipTests -Dmaven.javadoc.skip=true \
+          -Danypoint_username=$ANYPOINT_USERNAME \
+          -Danypoint_password=$ANYPOINT_PASSWORD \
+          -Ddblrepo_username=$DBLREPO_USERNAME \
+          -Ddblrepo_password=$DBLREPO_PASSWORD \
+          -Danypoint.groupId=$ANYPOINT_GROUP_ID
+    - name: Deploy to Main Environment
+      if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'main')
+      env:
+        ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
+        ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
+        DBLREPO_USERNAME: ${{ secrets.DBLREPO_USERNAME }}
+        DBLREPO_PASSWORD: ${{ secrets.DBLREPO_PASSWORD }}
+        ANYPOINT_GROUP_ID: ${{ secrets.ANYPOINT_GROUP_ID }}
+      run: |
+        echo "Checking secrets availability for deployment to Main Environment:"
+        echo "ANYPOINT_USERNAME length: ${#ANYPOINT_USERNAME}"
+        echo "DBLREPO_USERNAME length: ${#DBLREPO_USERNAME}"
+        echo "ANYPOINT_USERNAME: '${ANYPOINT_USERNAME }'"
+        echo "DBLREPO_USERNAME: '${DBLREPO_USERNAME }'"
+        echo "ANYPOINT_GROUP_ID: ${ANYPOINT_GROUP_ID}"
+        echo "Starting Maven deployment..."
+        mvn clean package deploy -s ./settings.xml -DskipTests -Dmaven.javadoc.skip=true \
+          -Danypoint_username=${ANYPOINT_USERNAME } \
+          -Danypoint_password=${ANYPOINT_PASSWORD } \
+          -Ddblrepo_username=${DBLREPO_USERNAME } \
+          -Ddblrepo_password=${DBLREPO_PASSWORD } \
+          -Danypoint.groupId=${ANYPOINT_GROUP_ID}
+
