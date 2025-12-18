@@ -1,4 +1,4 @@
-# DataBlind Connector 4.0.24 Reference
+# DataBlind Connector 5.0 Reference
 
 The DataBlind Connector provides secure data encryption and decryption capabilities for JSON data within MuleSoft applications. This connector integrates with the DataBlind encryption framework to enable field-level encryption, decryption, and data filtering operations.
 
