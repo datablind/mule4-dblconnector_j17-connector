@@ -279,7 +279,8 @@ For issues and questions related to the DataBlind Connector:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 4.0.24 | Current | Latest stable release with enhanced error handling and performance improvements |
+| 5.0.3 | Current | Latest stable release with CI/CD Integration for deployment to Anypoint Exchange |
+| 4.0.24 | Previous | Latest stable release with enhanced error handling and performance improvements |
 | 4.0.23 | Previous | Added NLP-based encryption capabilities |
 | 4.0.22 | Previous | Improved connection management and validation |
 
