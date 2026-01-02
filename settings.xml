@@ -17,11 +17,12 @@
            <username>${anypoint_username}</username>
            <password>${anypoint_password}</password>
        </server>
-       <server>
+<!--       <server>
            <id>anypoint-exchange-v3</id>
            <username>${anypoint_username}</username>
            <password>${anypoint_password}</password>
        </server>
+-->
        <server>
            <id>exchange-server</id>
            <username>${anypoint_username}</username>

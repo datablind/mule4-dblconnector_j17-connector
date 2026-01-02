@@ -5,7 +5,7 @@
 	<groupId>${anypoint.groupId}</groupId>
 	<!-- <groupId>aa698b83-e3f6-4a0c-a0cb-35c2c4639454</groupId> -->
 	<artifactId>mule-datablind-connector</artifactId>
-	<version>5.0.5</version>
+	<version>5.0.6</version>
 	<packaging>mule-extension</packaging>
 	<name>dblconnector_j17</name>
 
