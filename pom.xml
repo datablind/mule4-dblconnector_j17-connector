@@ -124,7 +124,7 @@
 		</repository>
 	</repositories>
 	<distributionManagement>
-		<!--<snapshotRepository>
+		<snapshotRepository>
 			<id>exchange-server</id>
 			<name>Exchange Repository</name>
 			<url>https://maven.anypoint.mulesoft.com/api/v2/organizations/${project.groupId}/maven</url>
@@ -132,7 +132,7 @@
 			<releases>
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
-		</snapshotRepository>-->
+		</snapshotRepository>
 
 		<repository>
 			<id>anypoint-exchange</id>
