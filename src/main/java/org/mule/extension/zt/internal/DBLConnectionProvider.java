@@ -22,6 +22,9 @@ import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.lifecycle.Stoppable;
 import javax.inject.Inject;
 
+import org.mule.sdk.api.annotation.ExternalLib;
+import org.mule.sdk.api.meta.ExternalLibraryType;
+
 import org.mule.runtime.http.api.HttpService;
 import org.mule.runtime.http.api.client.HttpClient;
 import org.mule.runtime.http.api.client.HttpClientConfiguration;
@@ -42,6 +45,13 @@ import org.slf4j.LoggerFactory;
  * This particular implementation uses {@link CachedConnectionProvider} which lazily creates and
  * caches connections. This is required for connection providers that create HttpClient instances.
  */
+
+@ExternalLib(name = "DataCrypt Library",
+description = "A library that provides Datacrypt encryption and decryption functionality",
+nameRegexpMatcher = "(.*)\\.datacrypt\\.jar",
+requiredClassName = "com.ztensor.datacrypt.DataCrypt",
+coordinates = "com.ztensor:datacrypt:3.0.5",
+type = ExternalLibraryType.JAR)
 
 public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnection>, Startable, Stoppable {
 
