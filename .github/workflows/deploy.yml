@@ -51,7 +51,7 @@ jobs:
         echo "DBLREPO_USERNAME length: ${#DBLREPO_USERNAME}"
         echo "ANYPOINT_PASSWORD length: ${#ANYPOINT_PASSWORD}"
         echo "DBLREPO_PASSWORD length: ${#DBLREPO_PASSWORD}"
-        echo "ANYPOINT_GROUP_ID length: ${ANYPOINT_GROUP_ID}"
+        echo "ANYPOINT_GROUP_ID length: ${#ANYPOINT_GROUP_ID}"
         echo "Starting Maven deployment...."
         mvn clean package deploy -s ./settings.xml -DskipTests -Dmaven.javadoc.skip=true \
           -Danypoint_username=$ANYPOINT_USERNAME \
@@ -73,7 +73,7 @@ jobs:
         echo "DBLREPO_USERNAME length: ${#DBLREPO_USERNAME}"
         echo "ANYPOINT_PASSWORD length: ${#ANYPOINT_PASSWORD}"
         echo "DBLREPO_PASSWORD length: ${#DBLREPO_PASSWORD}"
-        echo "ANYPOINT_GROUP_ID length: ${ANYPOINT_GROUP_ID}"
+        echo "ANYPOINT_GROUP_ID length: ${#ANYPOINT_GROUP_ID}"
         echo "Starting Maven deployment..."
         mvn clean package deploy -s ./settings.xml -DskipTests -Dmaven.javadoc.skip=true \
           -Danypoint_username=$ANYPOINT_USERNAME \

@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>${anypoint.groupId}</groupId>
 	<!-- <groupId>aa698b83-e3f6-4a0c-a0cb-35c2c4639454</groupId> -->
-	<artifactId>DataBlind</artifactId>
-	<version>5.0.4</version>
+	<artifactId>mule-datablind-connector<</artifactId>
+	<version>5.0.5</version>
 	<packaging>mule-extension</packaging>
 	<name>dblconnector_j17</name>
 
@@ -109,12 +109,13 @@
 			<name>GitHub OWNER Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/datablind/datacrypt</url>
 		</repository>
-		<repository>
+<!-- 		<repository>
 			<id>anypoint-exchange-v3</id>
 			<name>Anypoint Exchange V3</name>
 			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
 			<layout>default</layout>
 		</repository>
+-->
 		<repository>
 			<id>mulesoft-releases</id>
 			<name>MuleSoft Releases</name>
@@ -123,7 +124,7 @@
 		</repository>
 	</repositories>
 	<distributionManagement>
-		<snapshotRepository>
+		<!--<snapshotRepository>
 			<id>exchange-server</id>
 			<name>Exchange Repository</name>
 			<url>https://maven.anypoint.mulesoft.com/api/v2/organizations/${project.groupId}/maven</url>
@@ -131,7 +132,7 @@
 			<releases>
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
-		</snapshotRepository>
+		</snapshotRepository>-->
 
 		<repository>
 			<id>anypoint-exchange</id>
