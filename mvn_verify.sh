@@ -1,4 +1,4 @@
-!/bin/sh
+#!/bin/bash
 
 JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home"
 export JAVA_HOME
@@ -18,4 +18,25 @@ else
         exit 1
 fi
 
-mvn clean verify -Duri=${dataBlindUri} -DapiKey=${dataBlindApiKey}
+# Validate required environment variables for MUnit tests
+if [ -z "$dataBlindUri" ]; then
+        echo "***** ERROR: dataBlindUri environment variable is not set *****"
+        echo "***** Please set it before running this script: *****"
+        echo "   export dataBlindUri=your-api-uri"
+        echo "Exiting"
+        exit 1
+fi
+
+if [ -z "$dataBlindApiKey" ]; then
+        echo "***** ERROR: dataBlindApiKey environment variable is not set *****"
+        echo "***** Please set it before running this script: *****"
+        echo "   export dataBlindApiKey=your-api-key"
+        echo "Exiting"
+        exit 1
+fi
+
+mvn clean verify -s settings.xml \
+  -Duri=${dataBlindUri} \
+  -DapiKey=${dataBlindApiKey} 
+#  -Ddblrepo_username=${dblrepo_username} \
+#  -Ddblrepo_password=${dblrepo_password}
