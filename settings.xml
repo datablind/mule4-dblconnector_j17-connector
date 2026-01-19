@@ -17,29 +17,20 @@
            <username>${anypoint_username}</username>
            <password>${anypoint_password}</password>
        </server>
-<!--       <server>
-           <id>anypoint-exchange-v3</id>
-           <username>${anypoint_username}</username>
-           <password>${anypoint_password}</password>
-       </server>
--->
        <server>
            <id>exchange-server</id>
            <username>${anypoint_username}</username>
            <password>${anypoint_password}</password>
        </server>
-        <server>
-           <id>MuleRepository</id>
-           <username>${muleentrepo_username}</username>
-           <password>${muleentrepo_password}</password>
-       </server>       
-<!--
+
+       <!-- Any Pulbic access token from your github account can be used here. If you don't have a Github acccount, 
+       please contact dblind mulesoftconnector@ztensor.com to get an access token. -->
         <server>
            <id>datablindrepo</id>
-           <username>${dblrepo_username}</username>
+           <username>~~~~~Token~~~~~</username>
            <password>${dblrepo_password}</password>
        </server>
--->       
+       
    </servers>
    <mirrors/>
    <profiles>

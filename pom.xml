@@ -5,7 +5,7 @@
 	<groupId>${anypoint.groupId}</groupId>
 	<!-- <groupId>aa698b83-e3f6-4a0c-a0cb-35c2c4639454</groupId> -->
 	<artifactId>mule-datablind-connector</artifactId>
-	<version>5.0.14</version>
+	<version>5.0.15</version>
 	<packaging>mule-extension</packaging>
 	<name>dblconnector_j17</name>
 
@@ -32,8 +32,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ztensor</groupId>
-			<artifactId>datacrypt</artifactId>
-			<version>3.0.5</version>
+			<artifactId>datacrypt-release</artifactId>
+			<version>3.0.7</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- <dependency>
@@ -113,7 +113,7 @@
 		<repository>
 			<id>datablindrepo</id>
 			<name>GitHub OWNER Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/datablind/datacrypt</url>
+			<url>https://maven.pkg.github.com/datablind/datacrypt-release</url>
 		</repository>
 <!-- 		<repository>
 			<id>anypoint-exchange-v3</id>
