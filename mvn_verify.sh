@@ -35,8 +35,8 @@ if [ -z "$dataBlindApiKey" ]; then
         exit 1
 fi
 
-mvn clean verify -s settings.xml \
+mvn clean verify -U -s settings.xml \
   -Duri=${dataBlindUri} \
   -DapiKey=${dataBlindApiKey} 
-#  -Ddblrepo_username=${dblrepo_username} \
 #  -Ddblrepo_password=${dblrepo_password}
+#  -Ddblrepo_username=${dblrepo_username} \
