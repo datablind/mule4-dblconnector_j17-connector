@@ -8,11 +8,12 @@
       http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
       http://www.mulesoft.org/schema/mule/zt http://www.mulesoft.org/schema/mule/zt/current/mule-zt.xsd">
 
+    <munit:config name="zt-operations-test"/>
+    <configuration-properties file="automation-credential.properties" />
+
     <zt:config name="zt-config" encryptionKey="1234567890123456">
         <zt:connection apiUri="${uri}" apiKey="${apiKey}" apiRequestTimeout="30000" />
     </zt:config>
-
-    <munit:config name="zt-operations-test"/>
 
     <flow name="testEncryptJsonFlow">
         <zt:encrypt-json config-ref="zt-config"
