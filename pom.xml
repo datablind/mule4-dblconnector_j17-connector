@@ -2,12 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>${anypoint.groupId}</groupId>
-	<!-- <groupId>aa698b83-e3f6-4a0c-a0cb-35c2c4639454</groupId> -->
+	<groupId>org.ztensor.connectors</groupId>
 	<artifactId>mule-datablind-connector</artifactId>
-	<version>5.0.15</version>
+	<version>5.0.16</version>
 	<packaging>mule-extension</packaging>
-	<name>dblconnector_j17</name>
+	<name>DataBlind Connector - Mule 4</name>
 
 	<properties>
 		<munit.input.directory>src/test/munit</munit.input.directory>
@@ -15,7 +14,8 @@
 		<munit.extensions.maven.plugin.version>1.6.1</munit.extensions.maven.plugin.version>
 		<munit.version>3.6.3</munit.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
-		<anypoint.groupId>13c7cbe2-61a5-4740-9da0-ae298639b607</anypoint.groupId>
+		<jacoco.version>0.8.14</jacoco.version>
+        <maven.surefire.version>2.22.2</maven.surefire.version>
 	  </properties>
 
 	<parent>
@@ -67,6 +67,20 @@
 				<groupId>com.mulesoft.munit</groupId>
 				<artifactId>munit-extensions-maven-plugin</artifactId>
 				<version>${munit.extensions.maven.plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<argLines>
+							<argLine>
+									-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${session.executionRootDirectory}/target/jacoco.exec
+							</argLine>
+					</argLines>
+					<sharedLibraries>
+							<sharedLibrary>
+									<groupId>org.jsoup</groupId>
+									<artifactId>jsoup</artifactId>
+							</sharedLibrary>
+					</sharedLibraries>
+			    </configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -88,9 +102,14 @@
 						<version>${munit.version}</version>
 						<classifier>mule-plugin</classifier>
 					</dependency>
+					<dependency>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco.version}</version>
+				    </dependency>
 				</dependencies>
 			</plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.2.5</version>
@@ -99,17 +118,43 @@
 					<useModulePath>false</useModulePath>
 					<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
+			</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.version}</version>
+				<configuration>
+						<argLine>-Dfile.encoding=UTF-8</argLine>
+						<argLine>
+								-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${session.executionRootDirectory}/target/jacoco.exec
+						</argLine>
+				</configuration>
+				<dependencies>
+						<dependency>
+								<groupId>org.jacoco</groupId>
+								<artifactId>jacoco-maven-plugin</artifactId>
+								<version>${jacoco.version}</version>
+						</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.14</version>
+				<version>${jacoco.version}</version>
 				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
+						<execution>
+								<id>jacoco-initialize</id>
+								<goals>
+										<goal>prepare-agent</goal>
+								</goals>
+						</execution>
+						<execution>
+								<id>jacoco-site</id>
+								<phase>verify</phase>
+								<goals>
+										<goal>report</goal>
+								</goals>
+						</execution>
 				</executions>
 			</plugin>
 		</plugins>
