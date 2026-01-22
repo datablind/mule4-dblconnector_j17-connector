@@ -10,6 +10,7 @@ package org.mule.extension.zt.internal;
 
 import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.Configurations;
+import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
 import org.mule.runtime.extension.api.annotation.dsl.xml.Xml;
 import org.mule.sdk.api.annotation.JavaVersionSupport;
 import org.mule.sdk.api.meta.JavaVersion;
@@ -21,6 +22,7 @@ import org.mule.sdk.api.meta.JavaVersion;
  */
 @Xml(prefix = "zt")
 @Extension(name = "DATA BLIND")
+@ErrorTypes(DBLErrorProvider.DBLErrors.class)
 @JavaVersionSupport({JavaVersion.JAVA_17})
 @Configurations(DBLConfiguration.class)
 public class DBLExtension {
