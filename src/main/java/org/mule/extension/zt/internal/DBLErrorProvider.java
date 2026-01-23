@@ -8,11 +8,27 @@
  */
 package org.mule.extension.zt.internal;
 
+import org.mule.runtime.extension.api.annotation.error.ErrorTypeProvider;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 
-public enum DBLErrorProvider implements ErrorTypeDefinition<DBLErrorProvider> {
-      INVALID_PARAMETER,
-      TIME_OUT,
-      NOT_ALLOWED,
-      DATACRYPT_ERROR
+import java.util.HashSet;
+import java.util.Set;
+
+public class DBLErrorProvider implements ErrorTypeProvider {
+
+    @Override
+    public Set<ErrorTypeDefinition> getErrorTypes() {
+        Set<ErrorTypeDefinition> errors = new HashSet<>();
+        for (DBLErrors error : DBLErrors.values()) {
+            errors.add(error);
+        }
+        return errors;
+    }
+
+    public enum DBLErrors implements ErrorTypeDefinition<DBLErrors> {
+        INVALID_PARAMETER,
+        TIME_OUT,
+        NOT_ALLOWED,
+        DATACRYPT_ERROR
+    }
 }

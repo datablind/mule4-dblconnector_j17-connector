@@ -15,7 +15,8 @@
 		<munit.version>3.6.3</munit.version>
 		<maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
 		<jacoco.version>0.8.14</jacoco.version>
-        <maven.surefire.version>2.22.2</maven.surefire.version>
+        <!-- <maven.surefire.version>2.22.2</maven.surefire.version> -->
+		<maven.surefire.version>3.5.4</maven.surefire.version>
 	  </properties>
 
 	<parent>
@@ -33,7 +34,7 @@
 		<dependency>
 			<groupId>com.ztensor</groupId>
 			<artifactId>datacrypt-release</artifactId>
-			<version>3.0.7</version>
+			<version>3.0.8</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
@@ -173,15 +174,15 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-	<distributionManagement>
-		<!-- 
+	<!-- <distributionManagement>
+		
           In order to publish to the Exchange make sure the the user id has 
 		  all the following scopes:
 		  - Exchange Contributor
 		  - Exchange Creator
 		  - Exchange Viewer
 		  - Design Center Developer
-	    -->
+	    
 		<snapshotRepository>
 			<id>exchange-server</id>
 			<name>Exchange Repository</name>
@@ -201,5 +202,5 @@
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
 		</repository>
-	</distributionManagement>
+	</distributionManagement> -->
 </project>
