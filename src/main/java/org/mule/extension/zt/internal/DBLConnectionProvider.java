@@ -21,6 +21,7 @@ import org.mule.runtime.extension.api.annotation.param.display.Placement;
 import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.lifecycle.Stoppable;
 import javax.inject.Inject;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.mule.sdk.api.annotation.ExternalLib;
 import org.mule.sdk.api.meta.ExternalLibraryType;
@@ -32,6 +33,7 @@ import org.mule.runtime.http.api.client.HttpRequestOptions;
 import org.mule.runtime.http.api.client.proxy.ProxyConfig;
 import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,7 +131,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   @Inject
   private HttpService httpService;
 
-  private volatile HttpClient httpClient;
+  private final AtomicReference<HttpClient> httpClientReference = new AtomicReference<>();
 
   private final Logger LOGGER = LoggerFactory.getLogger(DBLConnectionProvider.class);
 
@@ -146,57 +148,66 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
     String response = null;
     HttpResponse httpResponse = null;
     try {
-        // Create the HTTP client with a name based on the configuration name
-        HttpClientConfiguration.Builder builder = new HttpClientConfiguration.Builder();
-        builder.setName(configName + "-http-client");
-        
-        // Configure proxy if provided
-        if (proxyHost != null && !proxyHost.trim().isEmpty()) {
-            // Create a ProxyConfig implementation
-            final String finalProxyHost = proxyHost;
-            final Integer finalProxyPort = proxyPort;
-            final String finalProxyUsername = proxyUsername;
-            final String finalProxyPassword = proxyPassword;
-            
-            ProxyConfig proxyConfig = new ProxyConfig() {
-                @Override
-                public String getHost() {
-                    return finalProxyHost;
+        HttpClient localHttpClient = httpClientReference.get();
+        if (localHttpClient == null) {
+            synchronized (this) {
+                localHttpClient = httpClientReference.get();
+                if (localHttpClient == null) {
+                    // Create the HTTP client with a name based on the configuration name
+                    HttpClientConfiguration.Builder builder = new HttpClientConfiguration.Builder();
+                    builder.setName(configName + "-http-client");
+                    
+                    // Configure proxy if provided
+                    if (proxyHost != null && !proxyHost.trim().isEmpty()) {
+                        // Create a ProxyConfig implementation
+                        final String finalProxyHost = proxyHost;
+                        final Integer finalProxyPort = proxyPort;
+                        final String finalProxyUsername = proxyUsername;
+                        final String finalProxyPassword = proxyPassword;
+                        
+                        ProxyConfig proxyConfig = new ProxyConfig() {
+                            @Override
+                            public String getHost() {
+                                return finalProxyHost;
+                            }
+                            
+                            @Override
+                            public int getPort() {
+                                return finalProxyPort;
+                            }
+                            
+                            @Override
+                            public String getUsername() {
+                                return finalProxyUsername;
+                            }
+                            
+                            @Override
+                            public String getPassword() {
+                                return finalProxyPassword;
+                            }
+                            
+                            @Override
+                            public String getNonProxyHosts() {
+                                return null;  // No non-proxy hosts configured
+                            }
+                        };
+                        
+                        builder.setProxyConfig(proxyConfig);
+                        if (proxyUsername != null && !proxyUsername.trim().isEmpty()) {
+                            LOGGER.info("Proxy configured with authentication: " + proxyHost + ":" + proxyPort);
+                        } else {
+                            LOGGER.info("Proxy configured: " + proxyHost + ":" + proxyPort);
+                        }
+                    }
+                    
+                    localHttpClient = httpService.getClientFactory().create(builder.build());
+                    localHttpClient.start();
+                    httpClientReference.set(localHttpClient);
                 }
-                
-                @Override
-                public int getPort() {
-                    return finalProxyPort;
-                }
-                
-                @Override
-                public String getUsername() {
-                    return finalProxyUsername;
-                }
-                
-                @Override
-                public String getPassword() {
-                    return finalProxyPassword;
-                }
-                
-                @Override
-                public String getNonProxyHosts() {
-                    return null;  // No non-proxy hosts configured
-                }
-            };
-            
-            builder.setProxyConfig(proxyConfig);
-            if (proxyUsername != null && !proxyUsername.trim().isEmpty()) {
-                LOGGER.info("Proxy configured with authentication: " + proxyHost + ":" + proxyPort);
-            } else {
-                LOGGER.info("Proxy configured: " + proxyHost + ":" + proxyPort);
             }
         }
         
-        httpClient = httpService.getClientFactory().create(builder.build());
-        httpClient.start();
-        
-        connection = new DBLConnection("Test", httpClient, apiUri, apiKey, apiRequestTimeout);
+        connection = new DBLConnection("Test", localHttpClient, apiUri, apiKey, apiRequestTimeout);
         if (apiUri != null || apiKey != null) {
             remoteConenctionRequired = true;
             HttpRequestOptions requestOptions = HttpRequestOptions.builder()
@@ -208,14 +219,14 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
              .addHeader("Content-Type", "application/json")
              .addHeader("x-api-key", apiKey)
              .build();
-            httpResponse = httpClient.send(request, requestOptions);
+            httpResponse = localHttpClient.send(request, requestOptions);
             response = new String(httpResponse.getEntity().getContent().readAllBytes());
             LOGGER.info("DataGuard API Status: " + response);  
         }
     }
     catch (Exception e) {
         LOGGER.error("Excception, datacrypt-status failed " + e);
-        LOGGER.error(e.getStackTrace().toString());
+        LOGGER.error(Arrays.toString(e.getStackTrace()));
         throw new ConnectionException("Operation datacrypt-status failed due to " , e );
     } 
     if (remoteConenctionRequired && httpResponse != null) {
@@ -262,8 +273,9 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   @Override
   public void stop() {
     try {
-      if (httpClient != null) {
-        httpClient.stop();
+      HttpClient localHttpClient = httpClientReference.getAndSet(null);
+      if (localHttpClient != null) {
+        localHttpClient.stop();
       }
     } catch (Exception e) {
       LOGGER.error("Error while stopping httpClient: " + e.getMessage(), e);
