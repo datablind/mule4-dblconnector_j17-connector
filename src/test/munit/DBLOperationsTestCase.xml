@@ -23,6 +23,10 @@
         <zt:connection apiUri="https://host/Dev" apiKey="1234567890123456" apiRequestTimeout="30000" />
     </zt:config>
 
+    <zt:config name="zt-config-invalid-proxy-connection" encryptionKey="1234567890123456">
+        <zt:connection apiUri="https://host/Dev" apiKey="1234567890123456" apiRequestTimeout="30000" 
+        proxyHost="ProxyHost" proxyUsername="ProxyUser" proxyPassword="ProxyPass"/>
+    </zt:config>
     <!-- 
           Test cases for encryptJson
     -->
@@ -145,6 +149,24 @@
     <munit:test name="connectionExceptionInEncryptJsonUsingNLPTest" expectedErrorType="ZT:CONNECTIVITY">
         <munit:execution>
             <flow-ref name="testConnectionExceptionInEncryptJsonUsingNLPFlow"/>
+        </munit:execution>
+        <!-- Validation is not needed and won't run because an error is expected -->
+    </munit:test>
+
+    <flow name="testProxyConnectionExceptionInEncryptJsonUsingNLPFlow">
+        <zt:encrypt-json-using-nlp config-ref="zt-config-invalid-proxy-connection"
+            tweak="1234567890123456"
+            overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
+            passPhrase="NOPASSPHRASE">
+            <zt:sensitive-json><![CDATA[{"name":"John", "phoneNumber" : "1234567890" , "age":30}]]></zt:sensitive-json>
+        </zt:encrypt-json-using-nlp>
+        <!-- Logger won't run because an error is expected -->
+        <logger level="INFO" message="EncryptJsonUsingNLP Output: #[payload]"/>
+    </flow>
+
+    <munit:test name="proxyConnectionExceptionInEncryptJsonUsingNLPTest" expectedErrorType="ZT:CONNECTIVITY">
+        <munit:execution>
+            <flow-ref name="testProxyConnectionExceptionInEncryptJsonUsingNLPFlow"/>
         </munit:execution>
         <!-- Validation is not needed and won't run because an error is expected -->
     </munit:test>
