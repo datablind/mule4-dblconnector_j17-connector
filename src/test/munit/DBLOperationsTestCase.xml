@@ -15,7 +15,11 @@
         <zt:connection apiUri="${uri}" apiKey="${apiKey}" apiRequestTimeout="30000" />
     </zt:config>
 
-    <zt:config name="zt-config-invalid" encryptionKey="1234567890123456">
+    <zt:config name="zt-config-invalid-key" encryptionKey="12345678">
+        <zt:connection apiUri="${uri}" apiKey="${apiKey}" apiRequestTimeout="30000" />
+    </zt:config>
+
+    <zt:config name="zt-config-invalid-connection" encryptionKey="1234567890123456">
         <zt:connection apiUri="https://host/Dev" apiKey="1234567890123456" apiRequestTimeout="30000" />
     </zt:config>
 
@@ -128,8 +132,8 @@
     </munit:test>
 
 
-    <flow name="testExceptionInEncryptJsonUsingNLPFlow">
-        <zt:encrypt-json-using-nlp config-ref="zt-config-invalid"
+    <flow name="testConnectionExceptionInEncryptJsonUsingNLPFlow">
+        <zt:encrypt-json-using-nlp config-ref="zt-config-invalid-connection"
             tweak="1234567890123456"
             overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
             passPhrase="NOPASSPHRASE">
@@ -138,9 +142,26 @@
         <logger level="INFO" message="EncryptJsonUsingNLP Output: #[payload]"/>
     </flow>
 
-    <munit:test name="exceptionInEncryptJsonUsingNLPTest" expectedErrorType="ZT:CONNECTIVITY">
+    <munit:test name="connectionExceptionInEncryptJsonUsingNLPTest" expectedErrorType="ZT:CONNECTIVITY">
         <munit:execution>
-            <flow-ref name="testExceptionInEncryptJsonUsingNLPFlow"/>
+            <flow-ref name="testConnectionExceptionInEncryptJsonUsingNLPFlow"/>
+        </munit:execution>
+        <!-- Validation is not needed and won't run because an error is expected -->
+    </munit:test>
+
+    <flow name="testDataCryptExceptionInEncryptJsonUsingNLPFlow">
+        <zt:encrypt-json-using-nlp config-ref="zt-config"
+            tweak="1234567890123456"
+            overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
+            passPhrase="NOPASSPHRASE">
+            <zt:sensitive-json><![CDATA[{"name":"John", "phoneNumber" : "1234567890" , "age":30,,}]]></zt:sensitive-json>
+        </zt:encrypt-json-using-nlp>
+        <logger level="INFO" message="EncryptJsonUsingNLP Output: #[payload]"/>
+    </flow>
+
+    <munit:test name="dataCryptExceptionInEncryptJsonUsingNLPTest" expectedErrorType="ZT:DATACRYPT_ERROR">
+        <munit:execution>
+            <flow-ref name="testDataCryptExceptionInEncryptJsonUsingNLPFlow"/>
         </munit:execution>
         <!-- Validation is not needed and won't run because an error is expected -->
     </munit:test>
@@ -209,6 +230,21 @@
         </munit:validation>
     </munit:test>
 
+    <flow name="testExceptionInOverrideTokenFlow">
+        <zt:override-token config-ref="zt-config-invalid-key"
+            passPhrase="MYPASSPHRASE"
+            expirationSecs="3600">
+        </zt:override-token>
+        <!-- Logger won't run because an error is expected -->
+        <logger level="INFO" message="OverrideToken Output: #[payload]"/>
+    </flow>
+    <munit:test name="exceptionInOverrideTokenTest" expectedErrorType="ZT:DATACRYPT_ERROR">
+        <munit:execution>
+            <flow-ref name="testExceptionInOverrideTokenFlow"/>
+        </munit:execution>
+        <!-- Validation is not needed and won't run because an error is expected -->
+    </munit:test>
+
     <flow name="testOverrideTokenWithNewKeyFlow">
         <zt:override-token-with-new-key
             key="1234567890123456"
@@ -227,6 +263,20 @@
         </munit:validation>
     </munit:test>
 
-
+    <flow name="testExceptionInOverrideTokenWithNewKeyFlow">
+        <zt:override-token-with-new-key
+            key="1234567"
+            passPhrase="MYPASSPHRASE"
+            expirationSecs="3600">
+        </zt:override-token-with-new-key>
+        <!-- Logger won't run because an error is expected -->
+        <logger level="INFO" message="OverrideTokenWithNewKey Output: #[payload]"/>
+    </flow>
+    <munit:test name="exceptionInOverrideTokenWithNewKeyTest" expectedErrorType="ZT:DATACRYPT_ERROR">
+        <munit:execution>
+            <flow-ref name="testExceptionInOverrideTokenWithNewKeyFlow"/>
+        </munit:execution>
+        <!-- Validation is not needed and won't run because an error is expected -->
+    </munit:test>
 
 </mule>

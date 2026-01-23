@@ -206,6 +206,9 @@ public class DBLOperations {
         // Execute request
         HttpResponse httpResponse = connection.getHttpClient().send(request, requestOptions);
         response = new String(httpResponse.getEntity().getContent().readAllBytes());
+        if (httpResponse.getStatusCode() != 200) {
+            throw new Exception("Error Response " + response );
+        }
     }
     catch (Exception e) {
     	LOGGER.error("Excception, encryptJsonUsingNLP failed " + e);
@@ -357,6 +360,13 @@ public class DBLOperations {
    String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
    LOGGER.info(versionTag + " DataBlind OverrideToken" );    	
    try {    
+           /*
+        Verify if the key is 16 chars long. If not, throw an exception.
+        */
+        if (configuration.getEncryptionKey().length() != 16) {
+            throw new Exception("key length must be 16 chars");
+           }
+    
        KeyContext kc = new KeyContext("CipherWorks", "Admin", "1.0", configuration.getEncryptionKey().getBytes());
        HmacToken HmacToken = new HmacToken();
    	   response = HmacToken.generateToken( kc, passPhrase, expirationSecs.intValue());
@@ -398,6 +408,12 @@ public class DBLOperations {
    String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
    LOGGER.info(versionTag + " DataBlind OverrideTokenWithNewKey" );    	
    try {    
+       /*
+        Verify if the key is 16 chars long. If not, throw an exception.
+        */
+       if (key.length() != 16) {
+        throw new Exception("key length must be 16 chars");
+       }
        KeyContext kc = new KeyContext("CipherWorks", "Admin", "1.0", key.getBytes());
        HmacToken HmacToken = new HmacToken();
    	   response = HmacToken.generateToken( kc, passPhrase, expirationSecs.intValue());
