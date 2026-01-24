@@ -25,7 +25,7 @@ import org.mule.sdk.api.meta.JavaVersion;
  */
 @Xml(prefix = "zt")
 @Extension(name = "DATA BLIND", vendor = "ZTensor", category = Category.CERTIFIED)
-//@RequiresEnterpriseLicense(allowEvaluationLicense = true)
+@RequiresEnterpriseLicense(allowEvaluationLicense = true)
 @ErrorTypes(DBLErrorProvider.DBLErrors.class)
 @JavaVersionSupport({JavaVersion.JAVA_17})
 @Configurations(DBLConfiguration.class)
