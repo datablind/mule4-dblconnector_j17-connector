@@ -42,16 +42,18 @@
            <repositories>
                <repository>
                    <id>mule-public</id>
-                   <url> https://repository.mulesoft.org/nexus/content/repositories/public </url>
+                   <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
                </repository>
            </repositories>
            <pluginRepositories>
                <pluginRepository>
                    <id>mule-public</id>
-                   <url> https://repository.mulesoft.org/nexus/content/repositories/public </url>
+                   <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
                </pluginRepository>
            </pluginRepositories>
        </profile>
    </profiles>
-   <activeProfiles/>
+   <activeProfiles>
+       <activeProfile>mule-extra-repos</activeProfile>
+   </activeProfiles>
 </settings>
