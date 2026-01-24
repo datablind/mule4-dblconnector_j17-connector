@@ -30,7 +30,11 @@
            <username>~~~~~Token~~~~~</username>
            <password>${dblrepo_password}</password>
        </server>
-       
+       <!-- <server>
+        <id>MuleRepository</id>
+        <username>${muleentrepo_username}</username>
+        <password>${muleentrepo_password}</password>
+       </server> -->
    </servers>
    <mirrors/>
    <profiles>

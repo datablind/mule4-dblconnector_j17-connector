@@ -173,6 +173,11 @@
 			<url>https://repository.mulesoft.org/releases/</url>
 			<layout>default</layout>
 		</repository>
+		<!-- <repository>
+			<id>MuleRepository</id>
+			<name>MuleRepository</name>
+			<url>https://repository.mulesoft.org/nexus-domain/content/repositories/releases-ee/</url>
+		</repository> -->
 	</repositories>
 	<!-- <distributionManagement>
 		
