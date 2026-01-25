@@ -6,7 +6,7 @@
  * This software is licensed for commercial use only. For licensing information,
  * please contact ZTensor, Inc.
  */
-package org.mule.extension.zt.internal;
+package org.mule.extension.zt.internal.operations;
 
 import static org.mule.runtime.extension.api.annotation.param.MediaType.ANY;
 import static org.mule.runtime.extension.api.annotation.param.MediaType.APPLICATION_JSON;
@@ -45,7 +45,10 @@ import org.mule.runtime.http.api.domain.entity.ByteArrayHttpEntity;
 import org.mule.runtime.http.api.domain.message.request.HttpRequestBuilder;
 import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
 import org.mule.runtime.extension.api.annotation.error.Throws;
-import org.mule.extension.zt.api.DBLErrorProvider;
+import org.mule.extension.zt.api.DBLErrors;
+import org.mule.extension.zt.internal.error.provider.DBLErrorProvider;
+import org.mule.extension.zt.internal.configuration.DBLConfiguration;
+import org.mule.extension.zt.internal.connection.DBLConnection;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +79,7 @@ import java.nio.charset.StandardCharsets;
  * @see DBLConnection
  * @see DBLErrorProvider
  */
-@ErrorTypes(DBLErrorProvider.DBLErrors.class)
+@ErrorTypes(DBLErrors.class)
 public class DBLOperations {
 
   private final Logger LOGGER = LoggerFactory.getLogger(DBLOperations.class);
@@ -134,7 +137,7 @@ public class DBLOperations {
     catch (Exception e) {
     	LOGGER.error("Excception, encryptJson failed " + e);
     	LOGGER.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_101: Operation encryptJson failed due to " + e , DBLErrorProvider.DBLErrors.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_101: Operation encryptJson failed due to " + e , DBLErrors.DATACRYPT_ERROR);
 
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
@@ -216,7 +219,7 @@ public class DBLOperations {
     catch (Exception e) {
     	LOGGER.error("Excception, encryptJsonUsingNLP failed " + e);
     	LOGGER.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_102: Operation encryptJsonUsingNLP failed due to " + e , DBLErrorProvider.DBLErrors.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_102: Operation encryptJsonUsingNLP failed due to " + e , DBLErrors.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -271,7 +274,7 @@ public class DBLOperations {
     catch (Exception e) {
     	LOGGER.error("Excception, filterJson failed " + e);
     	LOGGER.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_103: Operation filterJson failed due to " + e , DBLErrorProvider.DBLErrors.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_103: Operation filterJson failed due to " + e , DBLErrors.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -327,7 +330,7 @@ public class DBLOperations {
     catch (Exception e) {
     	LOGGER.error("Excception, decryptJson failed " + e);
     	LOGGER.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_104: Operation decryptJson failed due to " + e , DBLErrorProvider.DBLErrors.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_104: Operation decryptJson failed due to " + e , DBLErrors.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -377,7 +380,7 @@ public class DBLOperations {
    catch (Exception e) {
 	LOGGER.error("Excception, overrideToken failed " + e);
    	LOGGER.error(Arrays.toString(e.getStackTrace()));
-	throw new ModuleException("ERR_105: Operation overrideToken failed due to " + e , DBLErrorProvider.DBLErrors.DATACRYPT_ERROR);
+	throw new ModuleException("ERR_105: Operation overrideToken failed due to " + e , DBLErrors.DATACRYPT_ERROR);
    }
    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
  }
@@ -424,7 +427,7 @@ public class DBLOperations {
    catch (Exception e) {
 	LOGGER.error("Excception, overrideTokenWithNewKey failed " + e);
    	LOGGER.error(Arrays.toString(e.getStackTrace()));
-	throw new ModuleException("ERR_106: Operation overrideTokenWithNewKey failed due to " + e , DBLErrorProvider.DBLErrors.DATACRYPT_ERROR);
+	throw new ModuleException("ERR_106: Operation overrideTokenWithNewKey failed due to " + e , DBLErrors.DATACRYPT_ERROR);
    }
    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
  }

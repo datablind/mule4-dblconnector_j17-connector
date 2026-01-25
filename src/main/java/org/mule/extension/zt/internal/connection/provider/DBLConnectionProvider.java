@@ -6,8 +6,9 @@
  * This software is licensed for commercial use only. For licensing information,
  * please contact ZTensor, Inc.
  */
-package org.mule.extension.zt.internal;
+package org.mule.extension.zt.internal.connection.provider;
 
+import org.mule.extension.zt.internal.connection.DBLConnection;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.param.Optional;

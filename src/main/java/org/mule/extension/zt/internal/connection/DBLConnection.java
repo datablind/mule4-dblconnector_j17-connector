@@ -8,7 +8,7 @@
  */
 
  
-package org.mule.extension.zt.internal;
+package org.mule.extension.zt.internal.connection;
 
 import org.mule.runtime.http.api.client.HttpClient;
 

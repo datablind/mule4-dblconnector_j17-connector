@@ -6,13 +6,14 @@
  * This software is licensed for commercial use only. For licensing information,
  * please contact ZTensor, Inc.
  */
-package org.mule.extension.zt.internal;
+package org.mule.extension.zt.internal.extension;
 
 import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.Configurations;
 import org.mule.runtime.api.meta.Category;
 import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
-import org.mule.extension.zt.api.DBLErrorProvider;
+import org.mule.extension.zt.api.DBLErrors;
+import org.mule.extension.zt.internal.configuration.DBLConfiguration;
 import org.mule.runtime.extension.api.annotation.license.RequiresEnterpriseLicense;
 import org.mule.runtime.extension.api.annotation.dsl.xml.Xml;
 import org.mule.sdk.api.annotation.JavaVersionSupport;
@@ -26,7 +27,7 @@ import org.mule.sdk.api.meta.JavaVersion;
 @Xml(prefix = "zt")
 @Extension(name = "DATA BLIND", vendor = "ZTensor", category = Category.CERTIFIED)
 @RequiresEnterpriseLicense(allowEvaluationLicense = true)
-@ErrorTypes(DBLErrorProvider.DBLErrors.class)
+@ErrorTypes(DBLErrors.class)
 @JavaVersionSupport({JavaVersion.JAVA_17})
 @Configurations(DBLConfiguration.class)
 public class DBLExtension {
