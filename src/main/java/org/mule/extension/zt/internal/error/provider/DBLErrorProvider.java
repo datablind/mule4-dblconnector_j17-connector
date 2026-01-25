@@ -6,10 +6,11 @@
  * This software is licensed for commercial use only. For licensing information,
  * please contact ZTensor, Inc.
  */
-package org.mule.extension.zt.internal;
+package org.mule.extension.zt.internal.error.provider;
 
 import org.mule.runtime.extension.api.annotation.error.ErrorTypeProvider;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
+import org.mule.extension.zt.api.DBLErrors;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,12 +24,5 @@ public class DBLErrorProvider implements ErrorTypeProvider {
             errors.add(error);
         }
         return errors;
-    }
-
-    public enum DBLErrors implements ErrorTypeDefinition<DBLErrors> {
-        INVALID_PARAMETER,
-        TIME_OUT,
-        NOT_ALLOWED,
-        DATACRYPT_ERROR
     }
 }
