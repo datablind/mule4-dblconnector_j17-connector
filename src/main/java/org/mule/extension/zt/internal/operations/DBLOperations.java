@@ -32,8 +32,8 @@ import org.mule.runtime.api.meta.model.operation.ExecutionType;
 import java.util.Arrays;
 
 
-import com.ztensor.datacrypt.*;
-import com.ztensor.util.json.*;
+import com.ztensor.datacrypt.DataCrypt;
+import com.ztensor.util.json.JsonDataCrypt;
 
 import org.mule.runtime.http.api.HttpService;
 import org.mule.runtime.http.api.client.HttpClient;
@@ -82,10 +82,12 @@ import java.nio.charset.StandardCharsets;
 @ErrorTypes(DBLErrors.class)
 public class DBLOperations {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(DBLOperations.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DBLOperations.class);
 
   private static String versionTag = "v3.0.0";
-	
+
+  private static String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
+
   /**
    * Encrypts specified fields within a JSON document using the configured encryption key.
    * 
@@ -125,7 +127,7 @@ public class DBLOperations {
   		  @Password 
   		  @Optional(defaultValue = "NOPASSPHRASE")
   		  @Placement(order = 2, tab="Advanced") String passPhrase) {
-    String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
+    //String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
 	LOGGER.info(versionTag + " DataBlind EncryptJson" );    	
 
     try {    
@@ -183,7 +185,7 @@ public class DBLOperations {
   		  @Password 
   		  @Optional(defaultValue = "NOPASSPHRASE")
   		  @Placement(order = 2, tab="Advanced") String passPhrase) {
-	String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
+	//String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
 	LOGGER.info(versionTag + " DataBlind EncryptJsonUsingNLP" );    	
     try {    
         String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
@@ -263,7 +265,7 @@ public class DBLOperations {
   		  @Password 
   		  @Optional(defaultValue = "NOPASSPHRASE")
   		  @Placement(order = 2, tab="Advanced") String passPhrase) {
-	String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
+	//String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
 	LOGGER.info(versionTag + " DataBlind ReduceJson" );    	
     try {    
         String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
@@ -319,7 +321,7 @@ public class DBLOperations {
 		  @Password 
 		  @Optional(defaultValue = "NOPASSPHRASE")
 		  @Placement(order = 2, tab="Advanced") String passPhrase) {
-	String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
+	//String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
 	LOGGER.info(versionTag + " DataBlind DecryptJson" );    	
     try {  
         String encryptedJsonString = new String(encryptedJson.readAllBytes(), StandardCharsets.UTF_8);
@@ -363,7 +365,7 @@ public class DBLOperations {
  public InputStream overrideToken(@Config DBLConfiguration configuration,
 		  @DisplayName("Passphrase") @Expression(ExpressionSupport.SUPPORTED) String passPhrase,
 		  @DisplayName("Expiration Seconds") @Expression(ExpressionSupport.SUPPORTED) Integer expirationSecs) {
-   String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
+   //String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
    LOGGER.info(versionTag + " DataBlind OverrideToken" );    	
    try {    
            /*
@@ -411,7 +413,7 @@ public class DBLOperations {
 		  @DisplayName("Key") @Expression(ExpressionSupport.SUPPORTED) String key,
 		  @DisplayName("Passphrase") @Expression(ExpressionSupport.SUPPORTED) String passPhrase,
 		  @DisplayName("Expiration Seconds") @Expression(ExpressionSupport.SUPPORTED) Integer expirationSecs) {
-   String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
+   //String response = "{ 'Success' : 'false', 'error' : 'Undefined' }";
    LOGGER.info(versionTag + " DataBlind OverrideTokenWithNewKey" );    	
    try {    
        /*
