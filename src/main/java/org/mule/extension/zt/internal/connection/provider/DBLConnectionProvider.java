@@ -36,9 +36,11 @@ import org.mule.runtime.http.api.client.HttpRequestOptions;
 import org.mule.runtime.http.api.client.proxy.ProxyConfig;
 import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.concurrent.TimeoutException;
 
 /**
  * This class (as it's name implies) provides connection instances and the funcionality to disconnect and validate those
@@ -218,7 +220,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
     }
   }
 
-  private HttpResponse callDatacryptStatusIfNeeded(HttpClient client) throws Exception {
+  private HttpResponse callDatacryptStatusIfNeeded(HttpClient client) throws IOException, TimeoutException {
     if (apiUri == null || apiKey == null) {
       return null;
     }
