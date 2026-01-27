@@ -26,7 +26,7 @@ import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.api.meta.ExpressionSupport;
 import org.mule.runtime.api.meta.model.operation.ExecutionType;
-import java.util.Arrays;
+//import java.util.Arrays;
 import com.ztensor.datacrypt.KeyContext;
 import com.ztensor.datacrypt.HmacToken;
 import com.ztensor.util.json.JsonDataCrypt;
@@ -40,10 +40,11 @@ import org.mule.extension.zt.internal.error.DBLErrorType;
 import org.mule.extension.zt.internal.error.provider.DBLErrorProvider;
 import org.mule.extension.zt.internal.config.DBLConfiguration;
 import org.mule.extension.zt.internal.connection.DBLConnection;
-import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
+//import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.lang.IllegalArgumentException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -75,11 +76,11 @@ public class DBLOperations {
 
   private static final Logger logger = LoggerFactory.getLogger(DBLOperations.class);
 
-  private static final String versionTag = "v5.0.16";
-  private static final String defaultResponse = "{ 'Success' : 'false', 'error' : 'Undefined' }";
-  private static final String defaultKeyRingId = "CipherWorks";
-  private static final String defaultKeyId = "Admin";
-  private static final String defaultKeyVersion = "1.0";
+  private static final String VERSION_TAG = "v5.0.16";
+  private static final String DEFAULT_RESPONSE = "{ 'Success' : 'false', 'error' : 'Undefined' }";
+  private static final String DEFAULT_KEY_RING_ID = "CipherWorks";
+  private static final String DEFAULT_KEY_ID = "Admin";
+  private static final String DEFAULT_KEY_VERSION = "1.0";
 
   /**
    * Encrypts specified fields within a JSON document using the configured encryption key.
@@ -120,12 +121,12 @@ public class DBLOperations {
   		  @Password 
   		  @Optional(defaultValue = "NOPASSPHRASE")
   		  @Placement(order = 2, tab="Advanced") String passPhrase) {
-    String response = defaultResponse;
-	  logger.info("DataBlind EncryptJson {}", versionTag);    	
+    String response = DEFAULT_RESPONSE;
+	  logger.info("DataBlind EncryptJson {}", VERSION_TAG);    	
 
     try {    
         String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
-        KeyContext kc = new KeyContext(defaultKeyRingId, defaultKeyId, defaultKeyVersion, configuration.getEncryptionKey().getBytes());
+        KeyContext kc = new KeyContext(DEFAULT_KEY_RING_ID, DEFAULT_KEY_ID, DEFAULT_KEY_VERSION, configuration.getEncryptionKey().getBytes());
     	JsonDataCrypt jsonDataCrypt = new JsonDataCrypt(kc);
     	response = jsonDataCrypt.transform( "Encrypt", tweak, sensitiveJsonString, sensitiveFields, overRideToken, passPhrase);
     }
@@ -178,8 +179,8 @@ public class DBLOperations {
   		  @Password 
   		  @Optional(defaultValue = "NOPASSPHRASE")
   		  @Placement(order = 2, tab="Advanced") String passPhrase) {
-	  String response = defaultResponse;
-	  logger.info("DataBlind EncryptJsonUsingNLP {}", versionTag);    	
+	  String response = DEFAULT_RESPONSE;
+	  logger.info("DataBlind EncryptJsonUsingNLP {}", VERSION_TAG);    	
     try {    
         String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
         String jsonPayload = String.format("""
@@ -208,7 +209,7 @@ public class DBLOperations {
         HttpResponse httpResponse = connection.httpClient().send(request, requestOptions);
         response = new String(httpResponse.getEntity().getContent().readAllBytes());
         if (httpResponse.getStatusCode() != 200) {
-            throw new RuntimeException("Error Response " + response );
+            throw new IllegalArgumentException("Error Response " + response );
         }
     }
     catch (Exception e) {
@@ -258,11 +259,11 @@ public class DBLOperations {
   		  @Password 
   		  @Optional(defaultValue = "NOPASSPHRASE")
   		  @Placement(order = 2, tab="Advanced") String passPhrase) {
-	  String response = defaultResponse;
-	  logger.info("DataBlind ReduceJson {}", versionTag);    	
+	  String response = DEFAULT_RESPONSE;
+	  logger.info("DataBlind ReduceJson {}", VERSION_TAG);    	
     try {    
         String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
-        KeyContext kc = new KeyContext(defaultKeyRingId, defaultKeyId, defaultKeyVersion, configuration.getEncryptionKey().getBytes());
+        KeyContext kc = new KeyContext(DEFAULT_KEY_RING_ID, DEFAULT_KEY_ID, DEFAULT_KEY_VERSION, configuration.getEncryptionKey().getBytes());
         JsonDataCrypt jsonDataCrypt = new JsonDataCrypt(kc);
     	response = jsonDataCrypt.reduceJson( operation, sensitiveJsonString, sensitiveFields, overRideToken, passPhrase);
     }
@@ -314,11 +315,11 @@ public class DBLOperations {
 		  @Password 
 		  @Optional(defaultValue = "NOPASSPHRASE")
 		  @Placement(order = 2, tab="Advanced") String passPhrase) {
-	  String response = defaultResponse;
-	  logger.info("DataBlind DecryptJson {}", versionTag);    	
+	  String response = DEFAULT_RESPONSE;
+	  logger.info("DataBlind DecryptJson {}", VERSION_TAG);    	
     try {  
         String encryptedJsonString = new String(encryptedJson.readAllBytes(), StandardCharsets.UTF_8);
-        KeyContext kc = new KeyContext(defaultKeyRingId, defaultKeyId, defaultKeyVersion, configuration.getEncryptionKey().getBytes());
+        KeyContext kc = new KeyContext(DEFAULT_KEY_RING_ID, DEFAULT_KEY_ID, DEFAULT_KEY_VERSION, configuration.getEncryptionKey().getBytes());
     	JsonDataCrypt jsonDataCrypt = new JsonDataCrypt(kc);
     	response = jsonDataCrypt.transform( "Decrypt", tweak, encryptedJsonString, sensitiveFields, overRideToken, passPhrase);
     }
@@ -358,8 +359,8 @@ public class DBLOperations {
  public InputStream overrideToken(@Config DBLConfiguration configuration,
 		  @DisplayName("Passphrase") @Expression(ExpressionSupport.SUPPORTED) String passPhrase,
 		  @DisplayName("Expiration Seconds") @Expression(ExpressionSupport.SUPPORTED) Integer expirationSecs) {
-	 String response = defaultResponse;
-   logger.info("DataBlind OverrideToken {}", versionTag);    	
+	 String response = DEFAULT_RESPONSE;
+   logger.info("DataBlind OverrideToken {}", VERSION_TAG);    	
    try {    
            /*
         Verify if the key is 16 chars long. If not, throw an exception.
@@ -368,7 +369,7 @@ public class DBLOperations {
             throw new ModuleException("ERR_105: Operation overrideToken failed due to invalid key length", DBLErrorType.INVALID_PARAMETER);
            }
     
-       KeyContext kc = new KeyContext(defaultKeyRingId, defaultKeyId, defaultKeyVersion, configuration.getEncryptionKey().getBytes());
+       KeyContext kc = new KeyContext(DEFAULT_KEY_RING_ID, DEFAULT_KEY_ID, DEFAULT_KEY_VERSION, configuration.getEncryptionKey().getBytes());
        HmacToken hmacToken = new HmacToken();
    	   response = hmacToken.generateToken( kc, passPhrase, expirationSecs.intValue());
    }
@@ -406,8 +407,8 @@ public class DBLOperations {
 		  @DisplayName("Key") @Expression(ExpressionSupport.SUPPORTED) String key,
 		  @DisplayName("Passphrase") @Expression(ExpressionSupport.SUPPORTED) String passPhrase,
 		  @DisplayName("Expiration Seconds") @Expression(ExpressionSupport.SUPPORTED) Integer expirationSecs) {
-	 String response = defaultResponse;
-   logger.info("DataBlind OverrideTokenWithNewKey {}", versionTag);    	
+	 String response = DEFAULT_RESPONSE;
+   logger.info("DataBlind OverrideTokenWithNewKey {}", VERSION_TAG);    	
    try {    
        /*
         Verify if the key is 16 chars long. If not, throw an exception.
@@ -415,7 +416,7 @@ public class DBLOperations {
        if (key.length() != 16) {
         throw new IllegalArgumentException("key length must be 16 chars");
        }
-       KeyContext kc = new KeyContext(defaultKeyRingId, defaultKeyId, defaultKeyVersion, key.getBytes());
+       KeyContext kc = new KeyContext(DEFAULT_KEY_RING_ID, DEFAULT_KEY_ID, DEFAULT_KEY_VERSION, key.getBytes());
        HmacToken hmacToken = new HmacToken();
    	   response = hmacToken.generateToken( kc, passPhrase, expirationSecs.intValue());
    }

@@ -12,8 +12,8 @@ import org.mule.runtime.extension.api.annotation.error.ErrorTypeProvider;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.extension.zt.internal.error.DBLErrorType;
 
-import java.util.Arrays;
-import java.util.HashSet;
+//import java.util.Arrays;
+//import java.util.HashSet;
 import java.util.Set;
 
 public class DBLErrorProvider implements ErrorTypeProvider {
