@@ -10,8 +10,9 @@ package org.mule.extension.zt.internal.error.provider;
 
 import org.mule.runtime.extension.api.annotation.error.ErrorTypeProvider;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
-import org.mule.extension.zt.api.DBLErrors;
+import org.mule.extension.zt.internal.error.DBLErrorTypes;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,10 +20,6 @@ public class DBLErrorProvider implements ErrorTypeProvider {
 
     @Override
     public Set<ErrorTypeDefinition> getErrorTypes() {
-        Set<ErrorTypeDefinition> errors = new HashSet<>();
-        for (DBLErrors error : DBLErrors.values()) {
-            errors.add(error);
-        }
-        return errors;
+        return new HashSet<>(Arrays.asList(DBLErrorTypes.values()));
     }
 }

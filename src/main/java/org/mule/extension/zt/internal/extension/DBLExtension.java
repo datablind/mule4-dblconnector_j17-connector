@@ -12,8 +12,8 @@ import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.Configurations;
 import org.mule.runtime.api.meta.Category;
 import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
-import org.mule.extension.zt.api.DBLErrors;
-import org.mule.extension.zt.internal.configuration.DBLConfiguration;
+import org.mule.extension.zt.internal.error.DBLErrorTypes;
+import org.mule.extension.zt.internal.config.DBLConfiguration;
 import org.mule.runtime.extension.api.annotation.license.RequiresEnterpriseLicense;
 import org.mule.runtime.extension.api.annotation.dsl.xml.Xml;
 import org.mule.sdk.api.annotation.JavaVersionSupport;
@@ -26,8 +26,8 @@ import org.mule.sdk.api.meta.JavaVersion;
  */
 @Xml(prefix = "zt")
 @Extension(name = "DATA BLIND", vendor = "ZTensor", category = Category.CERTIFIED)
-@RequiresEnterpriseLicense(allowEvaluationLicense = true)
-@ErrorTypes(DBLErrors.class)
+// @RequiresEnterpriseLicense(allowEvaluationLicense = true)
+@ErrorTypes(DBLErrorTypes.class)
 @JavaVersionSupport({JavaVersion.JAVA_17})
 @Configurations(DBLConfiguration.class)
 public class DBLExtension {

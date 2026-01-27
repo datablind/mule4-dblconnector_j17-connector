@@ -11,6 +11,7 @@
 package org.mule.extension.zt.internal.connection;
 
 import org.mule.runtime.http.api.client.HttpClient;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -23,13 +24,21 @@ public final class DBLConnection {
   private final String apiKey;
   private final String apiUri;
   private final Integer apiRequestTimeout;
+  private TimeUnit apiRequestTimeoutUnit;
 
-  public DBLConnection(String id, HttpClient httpClient, String apiUri, String apiKey, Integer apiRequestTimeout) {
+
+  public DBLConnection(String id, 
+          HttpClient httpClient, 
+          String apiUri, 
+          String apiKey, 
+          Integer apiRequestTimeout, 
+          TimeUnit apiRequestTimeoutUnit) {
     this.id = id;
     this.httpClient = httpClient;
     this.apiKey = apiKey;
     this.apiUri = apiUri;
     this.apiRequestTimeout = apiRequestTimeout;
+    this.apiRequestTimeoutUnit = apiRequestTimeoutUnit;
   }
 
   public String getId() {
@@ -54,5 +63,8 @@ public final class DBLConnection {
 
   public Integer getApiRequestTimeout() {
     return apiRequestTimeout;
+  }
+  public TimeUnit getApiRequestTimeoutUnit() {
+    return apiRequestTimeoutUnit;
   }
 }

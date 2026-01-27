@@ -22,6 +22,7 @@ import org.mule.runtime.extension.api.annotation.param.display.Placement;
 import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.lifecycle.Stoppable;
 import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.mule.sdk.api.annotation.ExternalLib;
@@ -81,11 +82,20 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
 
   @Parameter
   @Optional(defaultValue = "30000")
-  @Summary("HTTP Request Timeout in milliseconds")
+  @Summary("HTTP Request Timeout (in milliseconds)")
   @DisplayName("Request Timeout")
   private Integer apiRequestTimeout;
   public Integer getApiRequestTimeout() {
     return apiRequestTimeout;
+  }
+
+  @Parameter
+  @Optional(defaultValue = "MILLISECONDS")
+  @Summary("API Request Timeout Unit")
+  @DisplayName("Request Timeout Unit")
+  private TimeUnit apiRequestTimeoutUnit = TimeUnit.MILLISECONDS;
+  public TimeUnit getApiRequestTimeoutUnit() {
+    return apiRequestTimeoutUnit;
   }
 
   @Parameter
@@ -134,7 +144,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
 
   private final AtomicReference<HttpClient> httpClientReference = new AtomicReference<>();
 
-  private final Logger LOGGER = LoggerFactory.getLogger(DBLConnectionProvider.class);
+  private static final Logger logger = LoggerFactory.getLogger(DBLConnectionProvider.class);
 
   @Override
   public DBLConnection connect() throws ConnectionException {
@@ -195,9 +205,9 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
                         
                         builder.setProxyConfig(proxyConfig);
                         if (proxyUsername != null && !proxyUsername.trim().isEmpty()) {
-                            LOGGER.info("Proxy configured with authentication: " + proxyHost + ":" + proxyPort);
+                            logger.info("Proxy configured with authentication: {} : {} " , proxyHost , proxyPort);
                         } else {
-                            LOGGER.info("Proxy configured: " + proxyHost + ":" + proxyPort);
+                            logger.info("Proxy configured: {} : {} " , proxyHost , proxyPort);
                         }
                     }
                     
@@ -207,12 +217,15 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
                 }
             }
         }
-        
-        connection = new DBLConnection("Test", localHttpClient, apiUri, apiKey, apiRequestTimeout);
-        if (apiUri != null || apiKey != null) {
+
+        int timeoutAsMilliseconds = (int) TimeUnit.MILLISECONDS.convert(apiRequestTimeout, apiRequestTimeoutUnit);
+
+
+        connection = new DBLConnection("Test", localHttpClient, apiUri, apiKey, apiRequestTimeout, apiRequestTimeoutUnit);
+        if (apiUri != null && apiKey != null) {
             remoteConenctionRequired = true;
             HttpRequestOptions requestOptions = HttpRequestOptions.builder()
-                .responseTimeout(apiRequestTimeout)
+                .responseTimeout(timeoutAsMilliseconds)
                 .build();
             HttpRequest request = HttpRequest.builder()
              .method("GET")
@@ -222,27 +235,27 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
              .build();
             httpResponse = localHttpClient.send(request, requestOptions);
             response = new String(httpResponse.getEntity().getContent().readAllBytes());
-            LOGGER.info("DataGuard API Status: " + response);  
+            logger.info("DataGuard API Status: {} " , response);  
         }
     }
     catch (Exception e) {
-        LOGGER.error("Excception, datacrypt-status failed " + e);
-        LOGGER.error(Arrays.toString(e.getStackTrace()));
+        //logger.error("Excception, datacrypt-status failed " + e);
+        //logger.error(Arrays.toString(e.getStackTrace()));
         throw new ConnectionException("Operation datacrypt-status failed due to " , e );
     } 
     if (remoteConenctionRequired && httpResponse != null) {
        int statusCode = httpResponse.getStatusCode();
        if (statusCode >= 200 && statusCode < 300) {
               // Successful response
-              LOGGER.info("Request successful. Status code: " + statusCode);
+              logger.info("Request successful. Status code: {} " , statusCode);
        } else if (statusCode >= 400 && statusCode < 500) {
               // Client-side error
-              LOGGER.info("Client error. Status code: " + statusCode);
+              //logger.info("Client error. Status code: {} " , statusCode);
               throw new ConnectionException("Operation datacrypt-status failed due to client error. Status code: " + statusCode );
               // Handle the error, perhaps by logging the payload
        } else {
               // Server-side error or other status
-              LOGGER.info("Error. Status code: " + statusCode);
+              //logger.info("Error. Status code: {} " , statusCode);
               throw new ConnectionException("Operation datacrypt-status failed due to server error. Status code: " + statusCode );
               // Handle as a server error
        }
@@ -255,7 +268,8 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
     try {
       connection.invalidate();
     } catch (Exception e) {
-      LOGGER.error("Error while disconnecting [" + connection.getId() + "]: " + e.getMessage(), e);
+      logger.error("Error while disconnecting [" + connection.getId() + "]: " + e.getMessage(), e);
+      logger.error("Error stack trace: {} " , Arrays.toString(e.getStackTrace()));
     }
   }
 
@@ -268,7 +282,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   public void start() {
     // HttpClient is started in the connect() method where it's created
     // This method is called before connect() in the lifecycle, so nothing to do here
-    LOGGER.debug("DBLConnectionProvider started");
+    logger.debug("DBLConnectionProvider started");
   }
 
   @Override
@@ -279,7 +293,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
         localHttpClient.stop();
       }
     } catch (Exception e) {
-      LOGGER.error("Error while stopping httpClient: " + e.getMessage(), e);
+      logger.error("Error while stopping httpClient: " + e.getMessage(), e);
     }
   }
 }
