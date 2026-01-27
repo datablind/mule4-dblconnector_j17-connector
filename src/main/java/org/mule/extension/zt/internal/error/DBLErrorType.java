@@ -10,7 +10,7 @@ package org.mule.extension.zt.internal.error;
 
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 
-public enum DBLErrorTypes implements ErrorTypeDefinition<DBLErrorTypes> {
+public enum DBLErrorType implements ErrorTypeDefinition<DBLErrorType> {
     DATACRYPT_ERROR,
     INVALID_PARAMETER,
     TIME_OUT,

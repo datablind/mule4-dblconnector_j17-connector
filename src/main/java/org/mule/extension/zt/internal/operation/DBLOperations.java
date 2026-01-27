@@ -36,7 +36,7 @@ import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
 import org.mule.runtime.http.api.domain.entity.ByteArrayHttpEntity;
 import org.mule.runtime.extension.api.annotation.error.Throws;
-import org.mule.extension.zt.internal.error.DBLErrorTypes;
+import org.mule.extension.zt.internal.error.DBLErrorType;
 import org.mule.extension.zt.internal.error.provider.DBLErrorProvider;
 import org.mule.extension.zt.internal.config.DBLConfiguration;
 import org.mule.extension.zt.internal.connection.DBLConnection;
@@ -132,7 +132,7 @@ public class DBLOperations {
     catch (Exception e) {
     	//logger.error("Excception, encryptJson failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_101: Operation encryptJson failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_101: Operation encryptJson failed due to " + e , DBLErrorType.DATACRYPT_ERROR);
 
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
@@ -193,19 +193,19 @@ public class DBLOperations {
     	
         // Build HTTP request using the configured timeout
         HttpRequestOptions requestOptions = HttpRequestOptions.builder()
-            .responseTimeout(connection.getApiRequestTimeout())
+            .responseTimeout(connection.apiRequestTimeout())
             .build();
         HttpRequest request = HttpRequest.builder()
             .method("POST")
-            .uri(connection.getApiUri() + "/datacrypt-nlp")
+            .uri(connection.apiUri() + "/datacrypt-nlp")
             .addHeader("Content-Type", "application/json")
-            .addHeader("x-api-key", connection.getApiKey())
+            .addHeader("x-api-key", connection.apiKey())
             .entity(new ByteArrayHttpEntity(jsonPayload.getBytes()))
             .build();
 
             
         // Execute request
-        HttpResponse httpResponse = connection.getHttpClient().send(request, requestOptions);
+        HttpResponse httpResponse = connection.httpClient().send(request, requestOptions);
         response = new String(httpResponse.getEntity().getContent().readAllBytes());
         if (httpResponse.getStatusCode() != 200) {
             throw new RuntimeException("Error Response " + response );
@@ -214,7 +214,7 @@ public class DBLOperations {
     catch (Exception e) {
     	//logger.error("Excception, encryptJsonUsingNLP failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_102: Operation encryptJsonUsingNLP failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_102: Operation encryptJsonUsingNLP failed due to " + e , DBLErrorType.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -269,7 +269,7 @@ public class DBLOperations {
     catch (Exception e) {
     	//logger.error("Excception, filterJson failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_103: Operation filterJson failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_103: Operation filterJson failed due to " + e , DBLErrorType.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -325,7 +325,7 @@ public class DBLOperations {
     catch (Exception e) {
     	//logger.error("Excception, decryptJson failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_104: Operation decryptJson failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_104: Operation decryptJson failed due to " + e , DBLErrorType.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -365,7 +365,7 @@ public class DBLOperations {
         Verify if the key is 16 chars long. If not, throw an exception.
         */
         if (configuration.getEncryptionKey().length() != 16) {
-            throw new ModuleException("ERR_105: Operation overrideToken failed due to invalid key length", DBLErrorTypes.INVALID_PARAMETER);
+            throw new ModuleException("ERR_105: Operation overrideToken failed due to invalid key length", DBLErrorType.INVALID_PARAMETER);
            }
     
        KeyContext kc = new KeyContext(defaultKeyRingId, defaultKeyId, defaultKeyVersion, configuration.getEncryptionKey().getBytes());
@@ -375,7 +375,7 @@ public class DBLOperations {
    catch (Exception e) {
 	//logger.error("Excception, overrideToken failed {}", e.getMessage());
    	//logger.error(Arrays.toString(e.getStackTrace()));
-	throw new ModuleException("ERR_105: Operation overrideToken failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
+	throw new ModuleException("ERR_105: Operation overrideToken failed due to " + e , DBLErrorType.DATACRYPT_ERROR);
    }
    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
  }
@@ -422,7 +422,7 @@ public class DBLOperations {
    catch (Exception e) {
 	//logger.error("Excception, overrideTokenWithNewKey failed {}", e.getMessage());
    	//logger.error(Arrays.toString(e.getStackTrace()));
-	throw new ModuleException("ERR_106: Operation overrideTokenWithNewKey failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
+	throw new ModuleException("ERR_106: Operation overrideTokenWithNewKey failed due to " + e , DBLErrorType.DATACRYPT_ERROR);
    }
    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
  }

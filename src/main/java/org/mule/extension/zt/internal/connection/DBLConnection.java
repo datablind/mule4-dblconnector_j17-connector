@@ -7,64 +7,23 @@
  * please contact ZTensor, Inc.
  */
 
- 
 package org.mule.extension.zt.internal.connection;
-
+import org.mule.runtime.extension.api.annotation.param.ConfigOverride;
 import org.mule.runtime.http.api.client.HttpClient;
 import java.util.concurrent.TimeUnit;
 
-
 /**
- * This class represents an extension connection just as example (there is no real connection with anything here c:).
+ * This record represents an extension connection.
  */
-public final class DBLConnection {
-
-  private final String id;
-  private final HttpClient httpClient;
-  private final String apiKey;
-  private final String apiUri;
-  private final Integer apiRequestTimeout;
-  private TimeUnit apiRequestTimeoutUnit;
-
-
-  public DBLConnection(String id, 
-          HttpClient httpClient, 
-          String apiUri, 
-          String apiKey, 
-          Integer apiRequestTimeout, 
-          TimeUnit apiRequestTimeoutUnit) {
-    this.id = id;
-    this.httpClient = httpClient;
-    this.apiKey = apiKey;
-    this.apiUri = apiUri;
-    this.apiRequestTimeout = apiRequestTimeout;
-    this.apiRequestTimeoutUnit = apiRequestTimeoutUnit;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void invalidate() {
-    // do something to invalidate this connection!
-  }
-
-  public HttpClient getHttpClient() {
-    return httpClient;
-  }
-
-  public String getApiKey() {
-    return apiKey;
-  }
-
-  public String getApiUri() {
-    return apiUri;
-  }
-
-  public Integer getApiRequestTimeout() {
-    return apiRequestTimeout;
-  }
-  public TimeUnit getApiRequestTimeoutUnit() {
-    return apiRequestTimeoutUnit;
-  }
+public record DBLConnection(
+    String id,
+    HttpClient httpClient,
+    String apiUri,
+    String apiKey,
+    @ConfigOverride Integer apiRequestTimeout,
+    @ConfigOverride TimeUnit apiRequestTimeoutUnit
+) {
+    public void invalidate() {
+        // do something to invalidate this connection!
+    }
 }
