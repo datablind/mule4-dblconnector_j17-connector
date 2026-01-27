@@ -22,6 +22,7 @@ import org.mule.runtime.extension.api.annotation.param.display.Placement;
 import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.lifecycle.Stoppable;
 import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.mule.sdk.api.annotation.ExternalLib;
@@ -81,11 +82,20 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
 
   @Parameter
   @Optional(defaultValue = "30000")
-  @Summary("HTTP Request Timeout in milliseconds")
+  @Summary("HTTP Request Timeout (in milliseconds)")
   @DisplayName("Request Timeout")
   private Integer apiRequestTimeout;
   public Integer getApiRequestTimeout() {
     return apiRequestTimeout;
+  }
+
+  @Parameter
+  @Optional(defaultValue = "MILLISECONDS")
+  @Summary("API Request Timeout Unit")
+  @DisplayName("Request Timeout Unit")
+  private TimeUnit apiRequestTimeoutUnit = TimeUnit.MILLISECONDS;
+  public TimeUnit getApiRequestTimeoutUnit() {
+    return apiRequestTimeoutUnit;
   }
 
   @Parameter
@@ -207,12 +217,15 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
                 }
             }
         }
-        
-        connection = new DBLConnection("Test", localHttpClient, apiUri, apiKey, apiRequestTimeout);
+
+        int timeoutAsMilliseconds = (int) TimeUnit.MILLISECONDS.convert(apiRequestTimeout, apiRequestTimeoutUnit);
+
+
+        connection = new DBLConnection("Test", localHttpClient, apiUri, apiKey, apiRequestTimeout, apiRequestTimeoutUnit);
         if (apiUri != null || apiKey != null) {
             remoteConenctionRequired = true;
             HttpRequestOptions requestOptions = HttpRequestOptions.builder()
-                .responseTimeout(apiRequestTimeout)
+                .responseTimeout(timeoutAsMilliseconds)
                 .build();
             HttpRequest request = HttpRequest.builder()
              .method("GET")

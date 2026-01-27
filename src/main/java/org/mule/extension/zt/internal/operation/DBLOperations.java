@@ -6,17 +6,14 @@
  * This software is licensed for commercial use only. For licensing information,
  * please contact ZTensor, Inc.
  */
-package org.mule.extension.zt.internal.operations;
+package org.mule.extension.zt.internal.operation;
 
 import static org.mule.runtime.extension.api.annotation.param.MediaType.ANY;
 import static org.mule.runtime.extension.api.annotation.param.MediaType.APPLICATION_JSON;
-//import org.mule.runtime.extension.api.annotation.values.OfValues;
 import org.mule.runtime.extension.api.exception.ModuleException;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Password;
 import org.mule.runtime.extension.api.annotation.param.display.Placement;
-//import org.mule.runtime.extension.api.annotation.param.Parameter;
-// import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
 import org.mule.runtime.extension.api.annotation.execution.Execution;
 
 
@@ -30,27 +27,21 @@ import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.api.meta.ExpressionSupport;
 import org.mule.runtime.api.meta.model.operation.ExecutionType;
 import java.util.Arrays;
-
-
 import com.ztensor.datacrypt.KeyContext;
 import com.ztensor.datacrypt.HmacToken;
 import com.ztensor.util.json.JsonDataCrypt;
 
-//import org.mule.runtime.http.api.HttpService;
-//import org.mule.runtime.http.api.client.HttpClient;
-//import org.mule.runtime.http.api.client.HttpClientConfiguration;
 import org.mule.runtime.http.api.client.HttpRequestOptions;
 import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
 import org.mule.runtime.http.api.domain.entity.ByteArrayHttpEntity;
-//import org.mule.runtime.http.api.domain.message.request.HttpRequestBuilder;
-import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
 import org.mule.runtime.extension.api.annotation.error.Throws;
-import org.mule.extension.zt.api.DBLErrors;
+import org.mule.extension.zt.internal.error.DBLErrorTypes;
 import org.mule.extension.zt.internal.error.provider.DBLErrorProvider;
-import org.mule.extension.zt.internal.configuration.DBLConfiguration;
+import org.mule.extension.zt.internal.config.DBLConfiguration;
 import org.mule.extension.zt.internal.connection.DBLConnection;
-//import javax.inject.Inject;
+import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
@@ -80,7 +71,6 @@ import java.nio.charset.StandardCharsets;
  * @see DBLConnection
  * @see DBLErrorProvider
  */
-@ErrorTypes(DBLErrors.class)
 public class DBLOperations {
 
   private static final Logger logger = LoggerFactory.getLogger(DBLOperations.class);
@@ -142,7 +132,7 @@ public class DBLOperations {
     catch (Exception e) {
     	//logger.error("Excception, encryptJson failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_101: Operation encryptJson failed due to " + e , DBLErrors.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_101: Operation encryptJson failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
 
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
@@ -218,13 +208,13 @@ public class DBLOperations {
         HttpResponse httpResponse = connection.getHttpClient().send(request, requestOptions);
         response = new String(httpResponse.getEntity().getContent().readAllBytes());
         if (httpResponse.getStatusCode() != 200) {
-            throw new Exception("Error Response " + response );
+            throw new RuntimeException("Error Response " + response );
         }
     }
     catch (Exception e) {
     	//logger.error("Excception, encryptJsonUsingNLP failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_102: Operation encryptJsonUsingNLP failed due to " + e , DBLErrors.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_102: Operation encryptJsonUsingNLP failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -279,7 +269,7 @@ public class DBLOperations {
     catch (Exception e) {
     	//logger.error("Excception, filterJson failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_103: Operation filterJson failed due to " + e , DBLErrors.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_103: Operation filterJson failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -335,7 +325,7 @@ public class DBLOperations {
     catch (Exception e) {
     	//logger.error("Excception, decryptJson failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
-    	throw new ModuleException("ERR_104: Operation decryptJson failed due to " + e , DBLErrors.DATACRYPT_ERROR);
+    	throw new ModuleException("ERR_104: Operation decryptJson failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
@@ -375,17 +365,17 @@ public class DBLOperations {
         Verify if the key is 16 chars long. If not, throw an exception.
         */
         if (configuration.getEncryptionKey().length() != 16) {
-            throw new Exception("key length must be 16 chars");
+            throw new ModuleException("ERR_105: Operation overrideToken failed due to invalid key length", DBLErrorTypes.INVALID_PARAMETER);
            }
     
        KeyContext kc = new KeyContext(defaultKeyRingId, defaultKeyId, defaultKeyVersion, configuration.getEncryptionKey().getBytes());
-       HmacToken HmacToken = new HmacToken();
-   	   response = HmacToken.generateToken( kc, passPhrase, expirationSecs.intValue());
+       HmacToken hmacToken = new HmacToken();
+   	   response = hmacToken.generateToken( kc, passPhrase, expirationSecs.intValue());
    }
    catch (Exception e) {
 	//logger.error("Excception, overrideToken failed {}", e.getMessage());
    	//logger.error(Arrays.toString(e.getStackTrace()));
-	throw new ModuleException("ERR_105: Operation overrideToken failed due to " + e , DBLErrors.DATACRYPT_ERROR);
+	throw new ModuleException("ERR_105: Operation overrideToken failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
    }
    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
  }
@@ -423,16 +413,16 @@ public class DBLOperations {
         Verify if the key is 16 chars long. If not, throw an exception.
         */
        if (key.length() != 16) {
-        throw new Exception("key length must be 16 chars");
+        throw new IllegalArgumentException("key length must be 16 chars");
        }
        KeyContext kc = new KeyContext(defaultKeyRingId, defaultKeyId, defaultKeyVersion, key.getBytes());
-       HmacToken HmacToken = new HmacToken();
-   	   response = HmacToken.generateToken( kc, passPhrase, expirationSecs.intValue());
+       HmacToken hmacToken = new HmacToken();
+   	   response = hmacToken.generateToken( kc, passPhrase, expirationSecs.intValue());
    }
    catch (Exception e) {
 	//logger.error("Excception, overrideTokenWithNewKey failed {}", e.getMessage());
    	//logger.error(Arrays.toString(e.getStackTrace()));
-	throw new ModuleException("ERR_106: Operation overrideTokenWithNewKey failed due to " + e , DBLErrors.DATACRYPT_ERROR);
+	throw new ModuleException("ERR_106: Operation overrideTokenWithNewKey failed due to " + e , DBLErrorTypes.DATACRYPT_ERROR);
    }
    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
  }

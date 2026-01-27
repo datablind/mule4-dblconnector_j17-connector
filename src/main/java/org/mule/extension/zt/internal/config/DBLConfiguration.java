@@ -6,13 +6,14 @@
  * This software is licensed for commercial use only. For licensing information,
  * please contact ZTensor, Inc.
  */
-package org.mule.extension.zt.internal.configuration;
+package org.mule.extension.zt.internal.config;
 
 import org.mule.runtime.extension.api.annotation.Operations;
 import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
-import org.mule.extension.zt.internal.operations.DBLOperations;
+import org.mule.runtime.extension.api.annotation.param.display.Placement;
+import org.mule.extension.zt.internal.operation.DBLOperations;
 import org.mule.extension.zt.internal.connection.provider.DBLConnectionProvider;
 
 
@@ -25,7 +26,8 @@ import org.mule.extension.zt.internal.connection.provider.DBLConnectionProvider;
 public class DBLConfiguration {
 
 @Parameter
-@DisplayName("Encryption Key")
+@Placement(tab = "Encryption")
+@DisplayName("Key")
 	private String encryptionKey;
 	public String getEncryptionKey() {
 		  return encryptionKey;

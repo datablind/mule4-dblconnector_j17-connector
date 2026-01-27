@@ -6,13 +6,13 @@
  * This software is licensed for commercial use only. For licensing information,
  * please contact ZTensor, Inc.
  */
-package org.mule.extension.zt.api;
+package org.mule.extension.zt.internal.error;
 
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 
-public enum DBLErrors implements ErrorTypeDefinition<DBLErrors> {
+public enum DBLErrorTypes implements ErrorTypeDefinition<DBLErrorTypes> {
+    DATACRYPT_ERROR,
     INVALID_PARAMETER,
     TIME_OUT,
-    NOT_ALLOWED,
-    DATACRYPT_ERROR
+    NOT_ALLOWED
 }
