@@ -144,8 +144,15 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
     return proxyPassword;
   }
 
-  @Inject
   private HttpService httpService;
+
+  public DBLConnectionProvider() {
+  }
+
+  @Inject
+  public void setHttpService(HttpService httpService) {
+    this.httpService = httpService;
+  }
 
   private final AtomicReference<HttpClient> httpClientReference = new AtomicReference<>();
 
@@ -167,6 +174,13 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   }
 
   private HttpClient getOrCreateHttpClient() {
+
+    if (httpService == null) {
+      throw new IllegalStateException(
+          "HttpService was not injected by Mule runtime. " +
+          "This indicates an invalid connector initialization."
+      );
+    }
     HttpClient existing = httpClientReference.get();
     if (existing != null) {
       return existing;

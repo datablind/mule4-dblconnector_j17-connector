@@ -23,6 +23,10 @@ public record DBLConnection(
     @ConfigOverride Integer apiRequestTimeout,
     @ConfigOverride TimeUnit apiRequestTimeoutUnit
 ) {
+    public DBLConnection() {
+        this(null, null, null, null, null, null);
+    }
+
     public void invalidate() {
         // do something to invalidate this connection!
     }
