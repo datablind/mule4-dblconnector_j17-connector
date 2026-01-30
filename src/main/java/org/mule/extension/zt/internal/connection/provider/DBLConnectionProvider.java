@@ -57,7 +57,7 @@ import java.util.concurrent.TimeoutException;
 description = "A library that provides Datacrypt encryption and decryption functionality",
 nameRegexpMatcher = "(.*)\\.datacrypt\\.jar",
 requiredClassName = "com.ztensor.datacrypt.DataCrypt",
-coordinates = "com.ztensor:datacrypt:3.0.5",
+coordinates = "com.ztensor:datacrypt:3.0.8",
 type = ExternalLibraryType.JAR)
 
 public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnection>, Startable, Stoppable {
