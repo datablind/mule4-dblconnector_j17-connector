@@ -54,8 +54,8 @@ import org.mule.runtime.extension.api.annotation.param.ConfigOverride;
 @ExternalLib(name = "DataCrypt Library",
 description = "A library that provides Datacrypt encryption and decryption functionality",
 nameRegexpMatcher = "(.*)\\.datacrypt\\.jar",
-requiredClassName = "com.ztensor.datacrypt.DataCrypt",
-coordinates = "com.ztensor:datacrypt:3.0.7",
+requiredClassName = "com.ztensor.util.json.JsonDataCrypt",
+coordinates = "com.ztensor:datacrypt:3.0.8",
 type = ExternalLibraryType.JAR)
 
 public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnection>, Startable, Stoppable {
