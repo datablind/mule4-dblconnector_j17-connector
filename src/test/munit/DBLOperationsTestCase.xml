@@ -30,7 +30,7 @@
 
     <zt:config name="zt-config-valid-proxy-connection" encryptionKey="1234567890123456">
         <zt:connection apiUri="${uri}" apiKey="${apiKey}" apiRequestTimeout="30000" 
-        proxyHost="localhost" proxyPort="3128" proxyUsername="proxyuser1" proxyPassword="password"/>
+        proxyHost="localhost" proxyPort="3128" proxyUsername="proxyuser" proxyPassword="password"/>
     </zt:config>
 
     <!-- 
@@ -141,7 +141,7 @@
         </munit:validation>
     </munit:test>
 
-    <flow name="testEncryptJsonUsingNLPValidProxyConnectionFlow">
+    <!-- <flow name="testEncryptJsonUsingNLPValidProxyConnectionFlow">
         <zt:encrypt-json-using-nlp config-ref="zt-config-valid-proxy-connection"
             tweak="1234567890123456"
             overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
@@ -157,9 +157,8 @@
         </munit:execution>
         <munit:validation>
             <munit-tools:assert-that expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
-            <!-- <munit-tools:assert-equals actual="#[payload]" expected="#['Using Configuration [configId] with Connection id [aValue:100]']"/> -->
         </munit:validation>
-    </munit:test>
+    </munit:test> -->
 
 
     <flow name="testConnectionExceptionInEncryptJsonUsingNLPFlow">

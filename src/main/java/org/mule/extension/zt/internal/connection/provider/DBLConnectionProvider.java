@@ -56,7 +56,7 @@ import java.util.concurrent.TimeoutException;
 @ExternalLib(name = "DataCrypt Library",
 description = "A library that provides Datacrypt encryption and decryption functionality",
 nameRegexpMatcher = "(.*)\\.datacrypt\\.jar",
-requiredClassName = "com.ztensor.datacrypt.DataCrypt",
+requiredClassName = "com.ztensor.util.json.JsonDataCrypt",
 coordinates = "com.ztensor:datacrypt:3.0.8",
 type = ExternalLibraryType.JAR)
 
