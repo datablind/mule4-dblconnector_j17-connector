@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ztensor.connectors</groupId>
 	<artifactId>mule-datablind-connector</artifactId>
-	<version>5.0.16</version>
+	<version>5.0.19</version>
 	<packaging>mule-extension</packaging>
 	<name>DataBlind Connector - Mule 4</name>
 
