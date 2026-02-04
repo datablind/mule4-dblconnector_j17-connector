@@ -296,7 +296,7 @@ The DataBlind Connector provides comprehensive error handling with the following
 4. **Logging**: Enable appropriate logging for debugging and monitoring
 
 ### Performance
-1. **Colocated DataBlind ** If the sensitive fields can be specified for a JSON payload, the datablind uses the Colocated library for performing the blinding. This eliminates the NLP API calling overhead. Use this appriach if the sensitive fields can be specified manually.
+1. **Co-located DataBlind** If the sensitive fields can be specified for a JSON payload, the datablind uses the Colocated library for performing the blinding. This eliminates the NLP API calling overhead. Use this appriach if the sensitive fields can be specified manually.
 2. **Batch Processing**: When calling the NLP enabled DataBlind URI, process multiple records in a large JSON instead of calling the API multiple times with smaller JSON with few records. 
 
 ## Examples
