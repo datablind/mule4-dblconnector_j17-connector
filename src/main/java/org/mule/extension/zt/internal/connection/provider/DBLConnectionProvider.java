@@ -20,6 +20,7 @@ import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
 import org.mule.runtime.extension.api.annotation.param.display.Password;
 import org.mule.runtime.extension.api.annotation.param.display.Placement;
+import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.lifecycle.Stoppable;
 import javax.inject.Inject;
@@ -53,12 +54,12 @@ import java.util.concurrent.TimeoutException;
  * caches connections. This is required for connection providers that create HttpClient instances.
  */
 
-@ExternalLib(name = "DataCrypt Library",
-description = "A library that provides Datacrypt encryption and decryption functionality",
-nameRegexpMatcher = "(.*)\\.datacrypt\\.jar",
-requiredClassName = "com.ztensor.util.json.JsonDataCrypt",
-coordinates = "com.ztensor:datacrypt:3.0.8",
-type = ExternalLibraryType.JAR)
+// @ExternalLib(name = "DataCrypt Library",
+// description = "A library that provides Datacrypt encryption and decryption functionality",
+// nameRegexpMatcher = "(.*)\\.datacrypt\\.jar",
+// requiredClassName = "com.ztensor.util.json.JsonDataCrypt",
+// coordinates = "com.ztensor:datacrypt:3.0.8",
+// type = ExternalLibraryType.JAR)
 
 public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnection>, Startable, Stoppable {
 
@@ -68,7 +69,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   @Parameter
   @Optional
   @Summary("The API base URI for the DataGuard API (https://host/Dev)")
-  @DisplayName("API URI")
+  @DisplayName("NLP API URI")
   private String apiUri;
   public String getApiUri() {
     return apiUri;
@@ -77,7 +78,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   @Parameter
   @Optional
   @Summary("The API Key for the DataGuard API.")
-  @DisplayName("DataGuardAPI Key")
+  @DisplayName("NLP API Key")
   private String apiKey;
   public String getApiKey() {
     return apiKey;
@@ -86,7 +87,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   @Parameter
   @Optional(defaultValue = "30000")
   @Summary("HTTP Request Timeout (in milliseconds)")
-  @DisplayName("Request Timeout")
+  @DisplayName("API Timeout")
   @ConfigOverride
   private Integer apiRequestTimeout;
   public Integer getApiRequestTimeout() {
@@ -96,7 +97,7 @@ public class DBLConnectionProvider implements CachedConnectionProvider<DBLConnec
   @Parameter
   @Optional(defaultValue = "MILLISECONDS")
   @Summary("API Request Timeout Unit")
-  @DisplayName("Request Timeout Unit")
+  @DisplayName("API Timeout Unit")
   @ConfigOverride
   private TimeUnit apiRequestTimeoutUnit = TimeUnit.MILLISECONDS;
   public TimeUnit getApiRequestTimeoutUnit() {
