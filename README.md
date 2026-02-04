@@ -97,7 +97,7 @@ The DataBlind Connector offers the following key capabilities:
 
 | Requirement | Version |
 |-------------|---------|
-| Mule Runtime | 4.3.0 or later |
+| Mule Runtime | 4.6.0 or later |
 | Java | 17 |
 | DataBlind Library | 3.0.8 |
 
@@ -296,9 +296,8 @@ The DataBlind Connector provides comprehensive error handling with the following
 4. **Logging**: Enable appropriate logging for debugging and monitoring
 
 ### Performance
-1. **Batch Processing**: Process multiple records in batches when possible
-2. **Connection Reuse**: Reuse connections for multiple operations
-3. **Caching**: Cache frequently used tokens and configurations
+1. **Colocated DataBlind ** If the sensitive fields can be specified for a JSON payload, the datablind uses the Colocated library for performing the blinding. This eliminates the NLP API calling overhead. Use this appriach if the sensitive fields can be specified manually.
+2. **Batch Processing**: When calling the NLP enabled DataBlind URI, process multiple records in a large JSON instead of calling the API multiple times with smaller JSON with few records. 
 
 ## Examples
 
@@ -315,19 +314,13 @@ Please refer to the following example project:
 3. **Field Mapping Errors**: Check that sensitive field names match exactly in JSON documents
 4. **Tweak Value Mismatch**: Ensure the same tweak value is used for encryption and decryption
 
-### Debugging
-1. **Enable Debug Logging**: Set log level to DEBUG for detailed operation information
-2. **Check Connection Status**: Use the connection validation feature to verify API connectivity
-3. **Validate Input Data**: Ensure JSON documents are properly formatted
-4. **Monitor Performance**: Use MuleSoft monitoring tools to track operation performance
-
 ## Support
 For issues and questions related to the DataBlind Connector:
 
 - **Documentation**: Refer to this README and inline code documentation
 - **Logs**: Check application logs for detailed error information
 - **MuleSoft Community**: Post questions in the MuleSoft Community forums
-- **Support**: Contact your MuleSoft support representative
+- **Support**: Contact mulesoftconnector@ztensor.com and/or your MuleSoft support representative
 
 ## Version History
 
@@ -338,10 +331,12 @@ For issues and questions related to the DataBlind Connector:
 | 4.0.24 | Previous | Latest stable release with enhanced error handling and performance improvements |
 | 4.0.23 | Previous | Added NLP-based encryption capabilities |
 | 4.0.22 | Previous | Improved connection management and validation |
+| 2.0.4 | 2023 | Java 8, Mule 4.3 Compatible Connector |
+| 1.0.0 | 2020 | Java 8, Mule 4.0 Compatible Connector |
 
 ## License
 This connector is proprietary software owned by ZTensor, Inc. All rights reserved.
 
 This software is licensed for commercial use only. Unauthorized copying, distribution, or use of this software, via any medium, is strictly prohibited.
 
-For licensing information, please contact ZTensor, Inc.
+For licensing information, please contact mulesoftconnector@ztensor.com.
