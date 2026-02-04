@@ -2,6 +2,87 @@
 
 The DataBlind Connector provides secure data encryption and decryption capabilities for JSON data within MuleSoft applications. This connector integrates with the DataBlind encryption framework to enable field-level encryption, decryption, and data filtering operations.
 
+# Example
+
+![Concept](/assets/data-blind-concept-diagram.jpg)
+
+## Input JSON
+
+```json
+{
+	    "legal" : 
+ 		[   
+ 			{ 
+ 			"firstName" : "John",  
+ 			"lastName"  : "Doe",
+ 			"age"       : 23 
+ 			},
+			{
+			"firstName" : "Mary",  
+ 			"lastName"  : "Smith",
+ 			"age"      : 32 
+ 			}
+ 		],                           
+	    "marketing": 
+		[ 
+  			{ 
+  			"firstName" : "Sally",
+  			"lastName"  : "Green",
+  			"age"      : 27 
+ 			}, 
+  			{ 
+  			"firstName" : "Jim", 
+  			"lastName"  : "Galley",
+  			"age"       : 41 
+  			}
+  		],
+  	    "companyName" : "True Value Corporation",
+  	    "address" : "123 First Street, Newyork, NY, USA",
+  	    "contactNumber" : "123456789"
+}
+ ```
+## Sensitive Fields
+```json
+{
+        "legal.firstName" : "AES:CBC",       /* legal.firstName will be encrypted using AES CBC Algorithm */
+	"legal.lastName" : "FE:PersonName",  /* legal.lastName will be encrypted as a Format Preserved PERSON-NAME field */
+        "legal.age" : "MASK:#",              /* legal.age will be masked as ######## */
+        "contactNumber" : "FE:PhoneNumber"   /* contactNumber will be encrypted as a Format Preserved PHONE-NUMBER field */
+}
+```
+## Output JSON
+```json
+{
+    "legal": [
+        {
+            "firstName": "ooQ9OqV3wIZeG+MkEk1KFw==",
+            "lastName": "Ees",
+            "age": "#######################"
+        },
+        {
+            "firstName": "/bbIa8Bzy76zsfqnUKWt7A==",
+            "lastName": "Edmgy",
+            "age": "#######################"
+        }
+    ],
+    "marketing": [
+        {
+            "firstName": "Sally",
+            "lastName": "Green",
+            "age": 27
+        },
+        {
+            "firstName": "Jim",
+            "lastName": "Galley",
+            "age": 41
+        }
+    ],
+    "companyName": "True Value  Corporation",
+    "address": "123 First Street, Newyork, NY, USA",
+    "contactNumber": "128388658"
+}
+```
+
 ## Overview
 
 The DataBlind Connector offers the following key capabilities:
@@ -16,7 +97,7 @@ The DataBlind Connector offers the following key capabilities:
 
 | Requirement | Version |
 |-------------|---------|
-| Mule Runtime | 4.6.0 or later |
+| Mule Runtime | 4.3.0 or later |
 | Java | 17 |
 | DataBlind Library | 3.0.8 |
 
@@ -28,7 +109,7 @@ The DataBlind Connector offers the following key capabilities:
 
 | Name | Type | Description | Default Value | Required |
 |------|------|-------------|---------------|----------|
-| **Connection** | [DataBlind Connection](#config_connection) | The connection parameters to provide to this configuration. | | ✓ |
+| **NLP API Connection** | [DataBlind Connection](#config_connection) | The connection parameters to provide to this configuration. | | No |
 | **Encryption Key** | String | The encryption key used for data encryption and decryption operations. | | ✓ |
 
 #### Connection Types
@@ -41,13 +122,14 @@ A connection provider that manages HTTP client connections for AI enabled remote
 
 | Name | Type | Description | Default Value | Required |
 |------|------|-------------|---------------|----------|
-| **API URI** | String | The base URI for the DataBlind API (e.g., https://host/Dev). | | No |
-| **DataGuardAPI Key** | String | The API key for authentication with the DataBlind API. | | No |
+| **NLP API URI** | String | The base URI for the DataBlind API (e.g., https://host/Dev). | | No |
+| **NLP API Key** | String | The API key for authentication with the DataBlind API. | | No |
+| **API Timeout** | Integer | HTTP Request Timeout (in milliseconds) | 30000 | No |
+| **API Timeout Unit** | TimeUnit | API Request Timeout Unit | MILLISECONDS | No |
 
 ## Operations
 
 ### EncryptJson
-
 Encrypts specified fields within a JSON document using the configured encryption key.
 
 #### Parameters
@@ -55,48 +137,41 @@ Encrypts specified fields within a JSON document using the configured encryption
 | Name | Type | Description | Default Value | Required |
 |------|------|-------------|---------------|----------|
 | **Sensitive Fields** | String | Json containing sensitive fields along with their data types. |  | ✓ |
-| **Sensitive JSON** | String | The JSON document containing fields to be encrypted | | ✓ |
+| **Sensitive JSON** | Binary | The JSON document containing fields to be encrypted | | ✓ |
 | **Tweak** | String | A unique value used in the encryption process for additional security | | ✓ |
 | **OverRide Token** | String | Optional override token, allows an authorized user to retrieve the clear data | "NOTOKEN" | No |
 | **Pass Phrase** | String | Optional passphrase, allows an authorized user to retrieve the clear data | "NOPASSPHRASE" | No |
 
 #### Example
-
 ```xml
 <zt:encrypt-json config-ref="DataBlind_Config"
-    sensitive-fields = "{
-        'name' : 'FE:PersonName',
-        'ssn' : "FE:SSN',
-        'creditCard' : 'AES:CREDIT_CARD'
-    }, tweak="047474" >
+    sensitiveFields = "{'name' : 'FE:PersonName', 'ssn' : 'FE:SSN', 'creditCard' : 'AES:CREDIT_CARD'}" 
+    tweak="047474" >
     <zt:sensitive-json>{"name":"John Doe","creditCard":"1234-5678-9012-3456","ssn":"123-45-6789"}</zt:sensitive-json>
 </zt:encrypt-json>
 ```
 
 ### EncryptJsonUsingNLP
-
 Encrypts JSON fields automatically using natural language processing to identify sensitive data.
 
 #### Parameters
 
 | Name | Type | Description | Default Value | Required |
 |------|------|-------------|---------------|----------|
-| **Sensitive JSON** | String | The JSON document to be processed for automatic field detection and encryption | | ✓ |
+| **Sensitive JSON** | Binary | The JSON document to be processed for automatic field detection and encryption | | ✓ |
 | **Tweak** | String | A unique value used in the encryption process for additional security | | ✓ |
 | **OverRide Token** | String | Optional override token, allows an authorized user to retrieve the clear data | "NOTOKEN" | No |
 | **Pass Phrase** | String | Optional passphrase, allows an authorized user to retrieve the clear data | "NOPASSPHRASE" | No |
 
 #### Example
-
 ```xml
-<zt:encrypt-json-using-nlp config-ref="DataBlind_Config" connection-ref="DataBlind_Connection"
+<zt:encrypt-json-using-nlp config-ref="DataBlind_Config"
     tweak="047474">
     <zt:sensitive-json>{"name":"John Doe","creditCard":"1234-5678-9012-3456","ssn":"123-45-6789"}</zt:sensitive-json>
 </zt:encrypt-json-using-nlp>
 ```
 
 ### DecryptJson
-
 Decrypts previously encrypted fields within a JSON document.
 
 #### Parameters
@@ -104,26 +179,21 @@ Decrypts previously encrypted fields within a JSON document.
 | Name | Type | Description | Default Value | Required |
 |------|------|-------------|---------------|----------|
 | **Sensitive Fields** | String | Json containing sensitive fields along with their data types (must match fields used during encryption) | | ✓ |
-| **Encrypted JSON** | String | The JSON document containing encrypted fields to be decrypted | | ✓ |
+| **Encrypted JSON** | Binary | The JSON document containing encrypted fields to be decrypted | | ✓ |
 | **Tweak** | String | The tweak value used during encryption (must match exactly) | | ✓ |
 | **OverRide Token** | String | Optional override token, allows an authorized user to retrieve the clear data | "NOTOKEN" | No |
 | **Pass Phrase** | String | Optional passphrase, allows an authorized user to retrieve the clear data | "NOPASSPHRASE" | No |
 
 #### Example
-
 ```xml
 <zt:decrypt-json config-ref="DataBlind_Config"
-    sensitive-fields = "{
-        'name' : 'FE:PersonName',
-        'ssn' : 'FE:SSN',
-        'creditCard' : 'AES:CREDIT_CARD'
-    }" tweak="047474">
+    sensitiveFields = "{'name' : 'FE:PersonName', 'ssn' : 'FE:SSN', 'creditCard' : 'AES:CREDIT_CARD'}" 
+    tweak="047474">
     <zt:encrypted-json>{"name":"John Doe","creditCard":"[ENCRYPTED]","ssn":"[ENCRYPTED]"}</zt:encrypted-json>
 </zt:decrypt-json>
 ```
 
-### FilterJson
-
+### reduceJson
 Reduces JSON data by filtering out sensitive information.
 
 #### Parameters
@@ -131,22 +201,20 @@ Reduces JSON data by filtering out sensitive information.
 | Name | Type | Description | Default Value | Required |
 |------|------|-------------|---------------|----------|
 | **Sensitive Fields** | String | String containing comma separated sensitive fields (e.g., "account.creditCard,ssn,email") | | ✓ |
-| **Sensitive JSON** | String | The JSON document containing fields to be filtered | | ✓ |
+| **Sensitive JSON** | Binary | The JSON document containing fields to be filtered | | ✓ |
 | **Operation** | String | The filtering operation to perform ("remove" or "retain") | | ✓ |
 | **OverRide Token** | String | Optional override token, allows an authorized user to retrieve all data | "NOTOKEN" | No |
 | **Pass Phrase** | String | Optional passphrase, allows an authorized user to retrieve all data | "NOPASSPHRASE" | No |
 
 #### Example
-
 ```xml
-<zt:filter-json config-ref="DataBlind_Config"
-    sensitive-fields="account.creditCard,ssn,email" operation="remove">
+<zt:reduce-json config-ref="DataBlind_Config"
+    sensitiveFields="account.creditCard,ssn,email" operation="remove">
     <zt:sensitive-json>{"name":"John Doe","account":{"creditCard":"1234-5678-9012-3456"},"ssn":"123-45-6789"}</zt:sensitive-json>
-</zt:filter-json>
+</zt:reduce-json>
 ```
 
 ### OverrideToken
-
 Generates an override token for users requiring authorization to access all original data.
 
 #### Parameters
@@ -157,14 +225,12 @@ Generates an override token for users requiring authorization to access all orig
 | **Expiration Seconds** | Integer | The number of seconds until the token expires | | ✓ |
 
 #### Example
-
 ```xml
 <zt:override-token config-ref="DataBlind_Config"
-    passphrase="my-secure-passphrase" expiration-secs="3600">
+    passPhrase="my-secure-passphrase" expirationSecs="3600" />
 ```
 
 ### OverrideTokenWithNewKey
-
 Generates an override token using a new encryption key.
 
 #### Parameters
@@ -176,10 +242,9 @@ Generates an override token using a new encryption key.
 | **Expiration Seconds** | Integer | The number of seconds until the token expires | | ✓ |
 
 #### Example
-
 ```xml
 <zt:override-token-with-new-key
-    key="new-encryption-key" passphrase="my-secure-passphrase" expiration-secs="3600">
+    key="1234567890123456" passPhrase="my-secure-passphrase" expirationSecs="3600" />
 ```
 
 ## Error Handling
@@ -187,11 +252,12 @@ Generates an override token using a new encryption key.
 The DataBlind Connector provides comprehensive error handling with the following error types:
 
 - **DATACRYPT_ERROR**: General encryption/decryption operation errors
-- **CONNECTION_ERROR**: Connection-related errors when using remote API
-- **VALIDATION_ERROR**: Input validation errors
+- **INVALID_PARAMETER**: Input validation errors
+- **TIME_OUT**: Connection-related timeout errors
+- **NOT_ALLOWED**: Authorization or policy violations
+- **CONNECTIVITY**: Connection-related errors when using remote API
 
 ### Error Response Format
-
 ```json
 {
   "Success": "false",
@@ -202,19 +268,16 @@ The DataBlind Connector provides comprehensive error handling with the following
 ## Security Considerations
 
 ### Encryption Key Management
-
 - Store encryption keys securely using MuleSoft Secure Configuration Properties
 - Rotate encryption keys regularly
 - Use different keys for different environments (dev, test, prod)
 
 ### API Key Security
-
 - Store API keys in secure configuration properties
 - Use environment-specific API keys
 - Regularly rotate API keys
 
 ### Token Management
-
 - Use short-lived override tokens
 - Implement proper token validation
 - Store tokens securely
@@ -222,20 +285,17 @@ The DataBlind Connector provides comprehensive error handling with the following
 ## Best Practices
 
 ### Configuration
-
 1. **Use Secure Properties**: Store sensitive configuration values in secure properties
 2. **Environment Separation**: Use different configurations for different environments
 3. **Connection Pooling**: Leverage connection pooling for remote API operations
 
 ### Data Processing
-
 1. **Field Selection**: Only encrypt fields that contain sensitive data
 2. **Tweak Values**: Use unique tweak values for each operation
 3. **Error Handling**: Implement proper error handling for all operations
 4. **Logging**: Enable appropriate logging for debugging and monitoring
 
 ### Performance
-
 1. **Batch Processing**: Process multiple records in batches when possible
 2. **Connection Reuse**: Reuse connections for multiple operations
 3. **Caching**: Cache frequently used tokens and configurations
@@ -243,31 +303,25 @@ The DataBlind Connector provides comprehensive error handling with the following
 ## Examples
 
 ### Complete Flow Example
-
 Please refer to the following example project:
 
 [https://github.com/datablind/dblconnector_j17_demo](https://github.com/datablind/dblconnector_j17_demo)
 
-
-
 ## Troubleshooting
 
 ### Common Issues
-
 1. **Encryption Key Errors**: Ensure the encryption key is properly configured and accessible
 2. **Connection Errors**: Verify API URI and API key configuration for remote operations
 3. **Field Mapping Errors**: Check that sensitive field names match exactly in JSON documents
 4. **Tweak Value Mismatch**: Ensure the same tweak value is used for encryption and decryption
 
 ### Debugging
-
 1. **Enable Debug Logging**: Set log level to DEBUG for detailed operation information
 2. **Check Connection Status**: Use the connection validation feature to verify API connectivity
 3. **Validate Input Data**: Ensure JSON documents are properly formatted
 4. **Monitor Performance**: Use MuleSoft monitoring tools to track operation performance
 
 ## Support
-
 For issues and questions related to the DataBlind Connector:
 
 - **Documentation**: Refer to this README and inline code documentation
@@ -279,13 +333,13 @@ For issues and questions related to the DataBlind Connector:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 5.0.3 | Current | Latest stable release with CI/CD Integration for deployment to Anypoint Exchange |
+| 5.0.16 | 2026-02-04 | Updated to Java 17, optimized connection management, and refined error handling. |
+| 5.0.3 | Previous | Latest stable release with CI/CD Integration for deployment to Anypoint Exchange |
 | 4.0.24 | Previous | Latest stable release with enhanced error handling and performance improvements |
 | 4.0.23 | Previous | Added NLP-based encryption capabilities |
 | 4.0.22 | Previous | Improved connection management and validation |
 
 ## License
-
 This connector is proprietary software owned by ZTensor, Inc. All rights reserved.
 
 This software is licensed for commercial use only. Unauthorized copying, distribution, or use of this software, via any medium, is strictly prohibited.
