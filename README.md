@@ -2,11 +2,8 @@
 
 The DataBlind Connector provides secure data encryption and decryption capabilities for JSON data within MuleSoft applications. This connector integrates with the DataBlind encryption framework to enable field-level encryption, decryption, and data filtering operations.
 
-# Example Application
 
-![Concept](/assets/data-blind-concept-diagram.jpg)
-
-## Overview
+# Overview
 
 The DataBlind Connector offers the following key capabilities:
 
@@ -16,7 +13,12 @@ The DataBlind Connector offers the following key capabilities:
 - **Data Filtering**: Reduce JSON data by filtering out sensitive information
 - **Token Management**: Generate and manage override tokens for enhanced authorization
 
-## Requirements
+# Concept
+
+![Concept](/assets/data-blind-concept-diagram.jpg)
+
+
+# Requirements
 
 | Requirement | Version |
 |-------------|---------|
@@ -24,7 +26,7 @@ The DataBlind Connector offers the following key capabilities:
 | Java | 17 |
 | DataBlind Library | 3.0.8 |
 
-## Input JSON
+# Sample Input & Output JSON
 
 ```json
 {
