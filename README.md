@@ -15,7 +15,7 @@ The DataBlind Connector offers the following key capabilities:
 
 # Concept
 
-![Concept](/assets/data-blind-concept-diagram.jpg)
+![Concept](/assets/data-blind-concept-diagram.png)
 
 
 # Requirements
