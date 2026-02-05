@@ -322,6 +322,34 @@ For issues and questions related to the DataBlind Connector:
 - **MuleSoft Community**: Post questions in the MuleSoft Community forums
 - **Support**: Contact mulesoftconnector@ztensor.com and/or your MuleSoft support representative
 
+Supported Data Types:
+
+### Supported Data Types
+
+| Category | Data Type | Description |
+|----------|-----------|-------------|
+| **Format-Preserving (FE:)** | `FE:AlphaNumeric` | Alphanumeric strings |
+| | `FE:Numeric` | Numeric strings |
+| | `FE:PhoneNumber` | Phone numbers |
+| | `FE:PersonName` | Person names |
+| | `FE:StreetAddress` | Street addresses |
+| | `FE:StreetAddressNice` | Street addresses (formatted) |
+| | `FE:Date-MM/dd/yyyy` | Dates in MM/dd/yyyy |
+| | `FE:DateTime-MM/dd/yyyy HH:mm:ss` | Date/time in MM/dd/yyyy HH:mm:ss |
+| | `FE:MultiFormatDateTime` | Date/time in multiple formats |
+| | `FE:IP-Address-v4` | IPv4 addresses |
+| | `FE:GPS` | GPS coordinates |
+| | `FE:UPC-A` | UPC-A barcodes |
+| | `FE:CreditCardNumber` | Credit card numbers |
+| | `FE:SSN` | Social Security numbers |
+| | `FE:CurrencyAmount` | Currency amounts |
+| | `FE:EmailAddress` | Email addresses |
+| | `FE:WebUrl` | Web URLs |
+| **Other** | `AES:CBC` | AES-128 CBC encryption (non-format-preserving) |
+| **Masking** | `MASK:X` | Replaces each character with X (e.g. MASK:* → ****) |
+
+*Total: 18 FE types, 1 AES type, and the MASK:X pattern.*
+
 ## Version History
 
 | Version | Date | Changes |
