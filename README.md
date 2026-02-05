@@ -326,8 +326,6 @@ For issues and questions related to the DataBlind Connector:
 - **MuleSoft Community**: Post questions in the MuleSoft Community forums
 - **Support**: Contact mulesoftconnector@ztensor.com and/or your MuleSoft support representative
 
-Supported Data Types:
-
 ### Supported Data Types
 
 | Category | Data Type | Description |
