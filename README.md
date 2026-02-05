@@ -20,7 +20,7 @@ The DataBlind Connector offers the following key capabilities:
 
 # Requirements
 
-| Requirement | Version |
+| Component | Version |
 |-------------|---------|
 | Mule Runtime | 4.6.0 or later |
 | Java | 17 |
