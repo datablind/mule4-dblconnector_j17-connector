@@ -4,7 +4,7 @@ The DataBlind Connector provides secure data encryption and decryption capabilit
 
 # Example Application
 
-![Concept](/assets/data-blind-concept-diagram.jpg)
+![Concept](/assets/data-blind-concept-diagram.png)
 
 ## Overview
 
