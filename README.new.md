@@ -46,7 +46,7 @@ This document provides comprehensive information about the DataBlind Connector, 
 
 | Name                   | Type                                         | Description                                                            | Default Value | Required |
 | ---------------------- | -------------------------------------------- | ---------------------------------------------------------------------- | ------------- | -------- |
-| **NLP API Connection** | [DataBlind Connection](#connection-types)    | The connection parameters to provide to this configuration.            | No            |          |
+| **NLP API Connection** | [DataBlind Connection](#connection-types)    | Configure this section to enable AI/NLP based PII identification.            | No            |          |
 | **Encryption Key**     | String                                       | The encryption key used for data encryption and decryption operations. | ✓             |          |
 
 #### Connection Types
@@ -59,8 +59,8 @@ A connection provider that manages HTTP client connections for AI enabled remote
 
 | Name                 | Type     | Description                                                    | Default Value | Required |
 | -------------------- | -------- | -------------------------------------------------------------- | ------------- | -------- |
-| **NLP API URI**      | String   | The base URI for the DataBlind API (e.g., https://host/Dev).   | No            |          |
-| **NLP API Key**      | String   | The API key for authentication with the DataBlind API.         | No            |          |
+| **NLP API URI**      | String   | DataBlind API (e.g., https://host/Dev).   |             |          |
+| **NLP API Key**      | String   | DataBlind API Key.         |             |          |
 | **API Timeout**      | Integer  | HTTP Request Timeout (in milliseconds)                         | 30000         | No       |
 | **API Timeout Unit** | TimeUnit | API Request Timeout Unit                                       | MILLISECONDS  | No       |
 
@@ -73,9 +73,9 @@ Encrypts specified fields within a JSON document using the configured encryption
 
 | Name                 | Type   | Description                                                                   | Default Value  | Required |
 | -------------------- | ------ | ----------------------------------------------------------------------------- | -------------- | -------- |
-| **Sensitive Fields** | String | Json containing sensitive fields along with their data types.                 | ✓              |          |
-| **Sensitive JSON**   | Binary | The JSON document containing fields to be encrypted                           | ✓              |          |
-| **Tweak**            | String | A unique value used in the encryption process for additional security         | ✓              |          |
+| **Sensitive Fields** | String | Json containing sensitive fields along with their data types.                 |               |          |
+| **Sensitive JSON**   | Binary | The JSON document containing fields to be encrypted                           |               |          |
+| **Tweak**            | String | A unique value used in the encryption process for additional security         |               |          |
 | **OverRide Token**   | String | Optional override token, allows an authorized user to retrieve the clear data | "NOTOKEN"      | No       |
 | **Pass Phrase**      | String | Optional passphrase, allows an authorized user to retrieve the clear data     | "NOPASSPHRASE" | No       |
 
@@ -95,8 +95,8 @@ Encrypts JSON fields automatically using natural language processing to identify
 
 | Name               | Type   | Description                                                                    | Default Value  | Required |
 | ------------------ | ------ | ------------------------------------------------------------------------------ | -------------- | -------- |
-| **Sensitive JSON** | Binary | The JSON document to be processed for automatic field detection and encryption | ✓              |          |
-| **Tweak**          | String | A unique value used in the encryption process for additional security          | ✓              |          |
+| **Sensitive JSON** | Binary | The JSON document to be processed for automatic field detection and encryption |               |          |
+| **Tweak**          | String | A unique value used in the encryption process for additional security          |               |          |
 | **OverRide Token** | String | Optional override token, allows an authorized user to retrieve the clear data  | "NOTOKEN"      | No       |
 | **Pass Phrase**    | String | Optional passphrase, allows an authorized user to retrieve the clear data      | "NOPASSPHRASE" | No       |
 
@@ -137,9 +137,9 @@ Reduces JSON data by filtering out sensitive information.
 
 | Name                 | Type   | Description                                                                               | Default Value  | Required |
 | -------------------- | ------ | ----------------------------------------------------------------------------------------- | -------------- | -------- |
-| **Sensitive Fields** | String | String containing comma separated sensitive fields (e.g., "account.creditCard,ssn,email") | ✓              |          |
-| **Sensitive JSON**   | Binary | The JSON document containing fields to be filtered                                        | ✓              |          |
-| **Operation**        | String | The filtering operation to perform ("remove" or "retain")                                 | ✓              |          |
+| **Sensitive Fields** | String | String containing comma separated sensitive fields (e.g., "account.creditCard,ssn,email") |               |          |
+| **Sensitive JSON**   | Binary | The JSON document containing fields to be filtered                                        |               |          |
+| **Operation**        | String | The filtering operation to perform ("remove" or "retain")                                 |               |          |
 | **OverRide Token**   | String | Optional override token, allows an authorized user to retrieve all data                   | "NOTOKEN"      | No       |
 | **Pass Phrase**      | String | Optional passphrase, allows an authorized user to retrieve all data                       | "NOPASSPHRASE" | No       |
 
@@ -158,8 +158,8 @@ Generates an override token for users requiring authorization to access all orig
 
 | Name                   | Type    | Description                                   | Default Value | Required |
 | ---------------------- | ------- | --------------------------------------------- | ------------- | -------- |
-| **Passphrase**         | String  | The passphrase used to generate the token     | ✓             |          |
-| **Expiration Seconds** | Integer | The number of seconds until the token expires | ✓             |          |
+| **Passphrase**         | String  | The passphrase used to generate the token     |              |   Yes       |
+| **Expiration Seconds** | Integer | The number of seconds until the token expires |              |   Yes       |
 
 #### Example
 ```xml
@@ -174,9 +174,9 @@ Generates an override token using a new encryption key.
 
 | Name                   | Type    | Description                                        | Default Value | Required |
 | ---------------------- | ------- | -------------------------------------------------- | ------------- | -------- |
-| **Key**                | String  | The new encryption key to use for token generation | ✓             |          |
-| **Passphrase**         | String  | The passphrase used to generate the token          | ✓             |          |
-| **Expiration Seconds** | Integer | The number of seconds until the token expires      | ✓             |          |
+| **Key**                | String  | The new encryption key to use for token generation |              |   Yes       |
+| **Passphrase**         | String  | The passphrase used to generate the token          |              |   Yes       |
+| **Expiration Seconds** | Integer | The number of seconds until the token expires      |              |   Yes       |
 
 #### Example
 ```xml
@@ -186,7 +186,7 @@ Generates an override token using a new encryption key.
 
 ## Error Handling
 
-The DataBlind Connector provides comprehensive error handling with the following error types:
+The DataBlind Connector throws the following error types:
 
 - **DATACRYPT_ERROR**: General encryption/decryption operation errors
 - **INVALID_PARAMETER**: Input validation errors
@@ -194,7 +194,8 @@ The DataBlind Connector provides comprehensive error handling with the following
 - **NOT_ALLOWED**: Authorization or policy violations
 - **CONNECTIVITY**: Connection-related errors when using remote API
 
-### Error Response Format
+In some rare scenarios, the operation can not be completed and an error is not thrown, the following response is returned:
+
 ```json
 {
   "Success": "false",
@@ -202,7 +203,7 @@ The DataBlind Connector provides comprehensive error handling with the following
 }
 ```
 
-### Supported Data Types
+### Supported Encryptable Data Types
 
 | Category | Data Type | Description |
 |----------|-----------|-------------|
@@ -363,10 +364,7 @@ The DataBlind Connector offers the following key capabilities:
 1. **Co-located DataBlind**: If the sensitive fields can be specified for a JSON payload, the datablind uses the Colocated library for performing the blinding. This eliminates the NLP API calling overhead. Use this approach if the sensitive fields can be specified manually.
 2. **Batch Processing**: When calling the NLP enabled DataBlind URI, process multiple records in a large JSON instead of calling the API multiple times with smaller JSON with few records.
 
-<a name="demo-application"></a>
-## Complete Flow Example
-Please refer to the following example project:
-[https://github.com/datablind/dblconnector_j17_demo](https://github.com/datablind/dblconnector_j17_demo)
+
 
 ## Troubleshooting
 
@@ -383,6 +381,11 @@ For issues and questions related to the DataBlind Connector:
 - **Logs**: Check application logs for detailed error information
 - **MuleSoft Community**: Post questions in the MuleSoft Community forums
 - **Support**: Contact mulesoftconnector@ztensor.com and/or your MuleSoft support representative
+
+<a name="demo-application"></a>
+## Complete Flow Example
+Please refer to the following example project:
+[https://github.com/datablind/dblconnector_j17_demo](https://github.com/datablind/dblconnector_j17_demo)
 
 ## License
 This connector is proprietary software owned by ZTensor, Inc. All rights reserved.
