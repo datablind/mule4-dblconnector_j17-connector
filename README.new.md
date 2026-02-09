@@ -1,4 +1,4 @@
-# DataBlind Connector 5.0 Reference
+# DataBlind Connector 5.0
 
 This document provides comprehensive information about the DataBlind Connector, including release history, technical specifications, and usage instructions.
 
@@ -6,6 +6,7 @@ This document provides comprehensive information about the DataBlind Connector, 
 * [Release Notes](#release-notes)
 * [Technical Reference](#technical-reference)
 * [User Manual](#user-manual)
+* [Demo application](#demo-application)
 
 ---
 
@@ -362,6 +363,7 @@ The DataBlind Connector offers the following key capabilities:
 1. **Co-located DataBlind**: If the sensitive fields can be specified for a JSON payload, the datablind uses the Colocated library for performing the blinding. This eliminates the NLP API calling overhead. Use this approach if the sensitive fields can be specified manually.
 2. **Batch Processing**: When calling the NLP enabled DataBlind URI, process multiple records in a large JSON instead of calling the API multiple times with smaller JSON with few records.
 
+<a name="demo-application"></a>
 ## Complete Flow Example
 Please refer to the following example project:
 [https://github.com/datablind/dblconnector_j17_demo](https://github.com/datablind/dblconnector_j17_demo)
