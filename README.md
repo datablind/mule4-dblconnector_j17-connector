@@ -3,10 +3,10 @@
 This document provides comprehensive information about the DataBlind Connector, including release history, technical specifications, and usage instructions.
 
 ## Table of Contents
-* [1. Release Notes](#1-release-notes)
-* [2. Technical Reference](#2-technical-reference)
-* [3. User Manual](#3-user-manual)
-* [4. Demo Application](#4-demo-application)
+[1. Release Notes](#1-release-notes)
+[2. Technical Reference](#2-technical-reference)
+[3. User Manual](#3-user-manual)
+[4. Demo Application](#4-demo-application)
 
 ---
 
