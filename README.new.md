@@ -370,20 +370,19 @@ The DataBlind Connector offers the following key capabilities:
 
 ### Common Issues
 1. **Encryption Key Errors**: Ensure the encryption key is properly configured and accessible
-2. **Connection Errors**: Verify API URI and API key configuration for remote operations
+2. **Connection Errors**: Verify API URI and API key configuration if the connctor is using AI/NLP based PII identification and encryption.
 3. **Field Mapping Errors**: Check that sensitive field names match exactly in JSON documents
 4. **Tweak Value Mismatch**: Ensure the same tweak value is used for encryption and decryption
 
 ## Support
 For issues and questions related to the DataBlind Connector:
 
-- **Documentation**: Refer to this README and inline code documentation
 - **Logs**: Check application logs for detailed error information
 - **MuleSoft Community**: Post questions in the MuleSoft Community forums
 - **Support**: Contact mulesoftconnector@ztensor.com and/or your MuleSoft support representative
 
 <a name="demo-application"></a>
-## Complete Flow Example
+## Demo Application
 Please refer to the following example project:
 [https://github.com/datablind/dblconnector_j17_demo](https://github.com/datablind/dblconnector_j17_demo)
 
