@@ -331,9 +331,17 @@ The DataBlind Connector offers the following key capabilities:
 ```
 ## Configuration Samples
 
-![Concept](/assets/blindJson.png)
-![Concept](/assets/blindJsonNLP.png)
+### Connector Configuration
+
 ![Concept](/assets/DataBlindConfig1.png)
+
+### Blind JSON
+
+![Concept](/assets/blindJson.png)
+
+### Blind JSON using NLP
+
+![Concept](/assets/blindJsonNLP.png)
 
 ## Security Considerations
 
