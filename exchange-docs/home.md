@@ -18,13 +18,13 @@ DataBlind is a high-performance encryption framework designed to protect sensiti
 ## Main Features
 
 ### Format-Preserving Encryption (FPE)
-Encrypt data such as credit card numbers, SSNs, and names while preserving the original format. This allows encrypted data to be stored in existing database schemas and processed by legacy systems without modification.
+Encrypt data such as credit card numbers, SSNs, and names while preserving the original format. This allows encrypted data to be shared with your **AI Agents** without Agents requiring modification.
 
 ### AI-Powered PII Discovery
 Leverage integrated NLP capabilities to automatically scan JSON payloads for sensitive information. The connector can detect and protect data based on context and patterns, significantly reducing manual configuration effort.
 
 ### Secure Data Reduction
-Easily implement data masking and filtering policies to ensure that only the necessary information is shared with downstream systems, minimizing the risk of data exposure.
+Easily implement data masking and filtering policies to ensure that only the necessary information is shared with the **AI Agents**, minimizing the risk of data exposure.
 
 ### Requirements
 
