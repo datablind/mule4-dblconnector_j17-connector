@@ -265,8 +265,7 @@ public class DBLOperations {
         String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
         KeyContext kc = new KeyContext(DEFAULT_KEY_RING_ID, DEFAULT_KEY_ID, DEFAULT_KEY_VERSION, configuration.getEncryptionKey().getBytes());
         JsonDataCrypt jsonDataCrypt = new JsonDataCrypt(kc);
-    	//response = jsonDataCrypt.reduceJson( operation, sensitiveJsonString, sensitiveFields, overRideToken, passPhrase);
-    	response = jsonDataCrypt.reduceJson( sensitiveFields, sensitiveJsonString, operation, overRideToken, passPhrase);
+    	  response = jsonDataCrypt.reduceJson( sensitiveFields, sensitiveJsonString, operation, overRideToken, passPhrase);
 
     }
     catch (Exception e) {
