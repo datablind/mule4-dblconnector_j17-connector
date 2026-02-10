@@ -44,6 +44,6 @@ Easily implement data masking and filtering policies to ensure that only the nec
 MuleSoft Certified connectors are developed by MuleSoft’s partners and developer community and subsequently reviewed and certified by MuleSoft. For these connectors, MuleSoft will take initial calls from customers and isolate the issue for resolution. MuleSoft disclaims any additional support obligation for such MuleSoft Certified Connector. For support of MuleSoft Certified Connectors, customers should contact the MuleSoft partner that created the connector. By installing this connector, you consent to MuleSoft sharing your contact information with the developer of this connector so that you can receive more information about it directly from the developer.
 
 ## About ZTensor
-ZTensor provides advanced data protection solutions that empower organizations to secure their most sensitive **Agentic AI** applications without compromising operational efficiency.
+ZTensor provides advanced data protection solutions that empower organizations to secure their most sensitive **Agentic AI** applications without compromising operational efficiency. For more information about us, visit https://www.ztensor.com/
 
 For support or inquiries, please contact us at [mulesoftconnector@ztensor.com](mailto:mulesoftconnector@ztensor.com).
