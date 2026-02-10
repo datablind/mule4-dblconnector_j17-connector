@@ -35,10 +35,10 @@ Easily implement data masking and filtering policies to ensure that only the nec
 | DataBlind Library | 3.0.8 |
 
 ## Resources
-* [Release Notes](https://github.com/datablind/mule4-dblconnector_j17-connector/blob/dev/doc/release-notes.md)
-* [Technical Reference](https://github.com/datablind/mule4-dblconnector_j17-connector/blob/dev/doc/technical-reference.md)
-* [User Manual](https://github.com/datablind/mule4-dblconnector_j17-connector/blob/dev/doc/user-manual.md)
-* [Demo Application](https://github.com/datablind/dblconnector_j17_demo)
+* [Release Notes](https://github.com/datablind/mule4-dblconnector_j17-connector/blob/main/README.md#1-release-notes)
+* [Technical Reference](https://github.com/datablind/mule4-dblconnector_j17-connector/blob/main/README.md#2-technical-reference)
+* [User Manual](https://github.com/datablind/mule4-dblconnector_j17-connector/blob/main/README.md#3-user-manual)
+* [Demo Application](https://github.com/datablind/mule4-dblconnector_j17-connector/blob/main/README.md#4-demo-application)
 
 ## About MuleSoft Certified Connectors:
 MuleSoft Certified connectors are developed by MuleSoft’s partners and developer community and subsequently reviewed and certified by MuleSoft. For these connectors, MuleSoft will take initial calls from customers and isolate the issue for resolution. MuleSoft disclaims any additional support obligation for such MuleSoft Certified Connector. For support of MuleSoft Certified Connectors, customers should contact the MuleSoft partner that created the connector. By installing this connector, you consent to MuleSoft sharing your contact information with the developer of this connector so that you can receive more information about it directly from the developer.
