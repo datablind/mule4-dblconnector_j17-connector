@@ -329,6 +329,11 @@ The DataBlind Connector offers the following key capabilities:
     "contactNumber": "128388658"
 }
 ```
+## Configuration Samples
+
+![Concept](/assets/blindJson.png)
+![Concept](/assets/blindJsonNLP.png)
+![Concept](/assets/DataBlindConfig1.png)
 
 ## Security Considerations
 
