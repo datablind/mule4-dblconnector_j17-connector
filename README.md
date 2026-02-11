@@ -17,13 +17,7 @@ This document provides comprehensive information about the DataBlind Connector, 
 
 | Version | Date       | Changes                                                                          |
 | ------- | ---------- | -------------------------------------------------------------------------------- |
-| 5.0.16  | 2026-02-04 | Updated to Java 17, optimized connection management, and refined error handling. |
-| 5.0.3   | 2026-01   | Latest stable release with CI/CD Integration for deployment to Anypoint Exchange |
-| 4.0.24  | 2026-01   | Latest stable release with enhanced error handling and performance improvements  |
-| 4.0.23  | 2026-01   | Added NLP-based encryption capabilities                                          |
-| 4.0.22  | 2025-12   | Improved connection management and validation                                    |
-| 2.0.4   | 2023       | Java 8, Mule 4.3 Compatible Connector                                            |
-| 1.0.0   | 2020       | Java 8, Mule 4.0 Compatible Connector                                            |
+| 1.0.0   | 2026-02-11 | Connector Cerification changes, Updated to Java 17, AI / NLP based PII detection. |
 
 ---
 
@@ -38,6 +32,16 @@ This document provides comprehensive information about the DataBlind Connector, 
 | Java              | 17             |
 | DataBlind Library | 3.0.8          |
 
+Add this dependency to your application pom.xml
+```
+
+		<dependency>
+			<groupId>org.ztensor.connectors</groupId>
+			<artifactId>mule-datablind-connector</artifactId>
+			<version>1.0.0</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+```
 ## Configurations
 
 ### Default Configuration
