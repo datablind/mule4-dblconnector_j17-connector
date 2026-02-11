@@ -66,7 +66,7 @@ import java.nio.charset.StandardCharsets;
  *   <li>Override token generation and management</li>
  * </ul>
  * 
- * @version 3.0.0
+ * @version 1.0.0
  * @since 4.0.24
  * @see DBLConfiguration
  * @see DBLConnection
@@ -76,7 +76,7 @@ public class DBLOperations {
 
   private static final Logger logger = LoggerFactory.getLogger(DBLOperations.class);
 
-  private static final String VERSION_TAG = "v5.0.16";
+  private static final String VERSION_TAG = "v1.0.0";
   private static final String DEFAULT_RESPONSE = "{ 'Success' : 'false', 'error' : 'Undefined' }";
   private static final String DEFAULT_KEY_RING_ID = "CipherWorks";
   private static final String DEFAULT_KEY_ID = "Admin";
