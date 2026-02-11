@@ -17,7 +17,7 @@ This document provides comprehensive information about the DataBlind Connector, 
 
 | Version | Date       | Changes                                                                          |
 | ------- | ---------- | -------------------------------------------------------------------------------- |
-| 1.0.0   | 2026-02-11 | Updated to Java 17, optimized connection management, and refined error handling, Added NLP-based encryption capabilities. |
+| 1.0.0   | 2026-02-11 | Connector Cerification changes, Updated to Java 17, Optimized connection management, AI/NLP based PII detection. |
 
 ---
 
