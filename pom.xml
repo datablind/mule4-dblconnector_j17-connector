@@ -2,11 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.ztensor.connectors</groupId>
+	<!-- <groupId>org.ztensor.connectors</groupId> -->
+	<groupId>3a209eb5-371f-4b87-aaa2-19c539592cea</groupId>
 	<artifactId>mule-datablind-connector</artifactId>
 	<version>1.0.0</version>
 	<packaging>mule-extension</packaging>
-	<name>DataBlind Connector - Mule 4</name>
+	<name>ZTensor DataBlind Connector - Mule 4</name>
+    <description>ZTensor DataBlind Connector for Mule 4 - Sensitive Data Protection </description>
 
 	<properties>
 		<munit.input.directory>src/test/munit</munit.input.directory>
@@ -33,7 +35,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ztensor</groupId>
-			<artifactId>datacrypt</artifactId>
+			<artifactId>datacrypt-release</artifactId>
 			<version>3.0.8</version>
 			<scope>compile</scope>
 		</dependency>
@@ -169,14 +171,14 @@
 			<url>https://repository.mulesoft.org/nexus-domain/content/repositories/releases-ee/</url>
 		</repository> -->
 	</repositories>
-	<!-- <distributionManagement>
+	<distributionManagement>
 		
-          In order to publish to the Exchange make sure the the user id has 
-		  all the following scopes:
-		  - Exchange Contributor
-		  - Exchange Creator
-		  - Exchange Viewer
-		  - Design Center Developer
+			<!-- In order to publish to the Exchange make sure the the user id has 
+			all the following scopes:
+			- Exchange Contributor
+			- Exchange Creator
+			- Exchange Viewer
+			- Design Center Developer -->
 	    
 		<snapshotRepository>
 			<id>exchange-server</id>
@@ -197,5 +199,5 @@
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
 		</repository>
-	</distributionManagement> -->
+	</distributionManagement>
 </project>

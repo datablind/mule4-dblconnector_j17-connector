@@ -1,4 +1,5 @@
 git add --all
 git commit -m "${1}"
-git push -u origin dev
+branch=`git branch --show-current`
+echo git push -u origin ${branch}
 
