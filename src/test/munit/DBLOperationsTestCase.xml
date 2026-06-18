@@ -214,10 +214,10 @@
     </munit:test>
 
     <!-- 
-          Test cases for filterJson
+          Test cases for reduceJson
     -->
 
-    <flow name="testFilterJsonFlow">
+    <flow name="testReduceJsonFlow">
         <zt:reduce-json config-ref="zt-config"
             sensitiveFields="name,age"
             operation="remove"
@@ -225,21 +225,19 @@
             passPhrase="MYPASSPHRASE">
             <zt:sensitive-json><![CDATA[{"name":"John", "age":30, "city":"New York"}]]></zt:sensitive-json>
         </zt:reduce-json>
-        <logger level="INFO" message="FilterJson Output: #[payload]"/>
+        <logger level="INFO" message="ReduceJson Output: #[payload]"/>
     </flow>
 
-    <munit:test name="filterJsonTest">
+    <munit:test name="reduceJsonTest">
         <munit:execution>
-            <flow-ref name="testFilterJsonFlow"/>
+            <flow-ref name="testReduceJsonFlow"/>
         </munit:execution>
         <munit:validation>
             <munit-tools:assert-that expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
-            <!-- <munit-tools:assert-equals actual="#[payload]" expected="#['Filtered JSON result']"/> -->
         </munit:validation>
     </munit:test>
 
-
-    <flow name="testExceptionInFilterJsonFlow">
+    <flow name="testExceptionInReduceJsonFlow">
         <zt:reduce-json config-ref="zt-config"
             sensitiveFields="name,age"
             operation="remove"
@@ -247,16 +245,38 @@
             passPhrase="MYPASSPHRASE">
             <zt:sensitive-json><![CDATA[{"name":"John", "age":30, "city":"New York",,}]]></zt:sensitive-json>
         </zt:reduce-json>
+        <logger level="INFO" message="ReduceJson Output: #[payload]"/>
+    </flow>
+
+    <munit:test name="exceptionInReduceJsonTest" expectedErrorType="ZT:DATACRYPT_ERROR">
+        <munit:execution>
+            <flow-ref name="testExceptionInReduceJsonFlow"/>
+        </munit:execution>
+    </munit:test>
+
+    <!-- 
+          Test cases for filterJson
+    -->
+
+    <flow name="testFilterJsonFlow">
+        <zt:filter-json config-ref="zt-config"
+            filterConditions='{"filter":"include","operator":"OR","conditions":{"name1":{"type":"regex","value":"value1."}}}'
+            overRideToken="20241003164650a76b05d5ccaa35482f1867612e68808245911dc3547558a336d502d45000bdb3"
+            passPhrase="MYPASSPHRASE">
+            <zt:sensitive-json><![CDATA[{"name1":"value11","name2":"value12"}]]></zt:sensitive-json>
+        </zt:filter-json>
         <logger level="INFO" message="FilterJson Output: #[payload]"/>
     </flow>
 
-    <munit:test name="exceptionInFilterJsonTest" expectedErrorType="ZT:DATACRYPT_ERROR">
-        <munit:execution>
-            <flow-ref name="testExceptionInFilterJsonFlow"/>
-        </munit:execution>
-        <!-- Validation is not needed and won't run because an error is expected -->
-    </munit:test>
 
+    <munit:test name="filterJsonTest">
+        <munit:execution>
+            <flow-ref name="testFilterJsonFlow"/>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+        </munit:validation>
+    </munit:test>
 
 
     <flow name="testOverrideTokenFlow">

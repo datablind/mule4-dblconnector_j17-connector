@@ -2,9 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.ztensor.connectors</groupId>
+	<!-- <groupId>org.ztensor.connectors</groupId> -->
+	<groupId>acda9d4d-1bfb-4b44-9b48-6f8f49157bbd</groupId>
 	<artifactId>mule-datablind-connector</artifactId>
-	<version>1.0.0</version>
+	<version>1.4.3</version>
 	<packaging>mule-extension</packaging>
 	<name>DataBlind Connector - Mule 4</name>
 
@@ -33,8 +34,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ztensor</groupId>
-			<artifactId>datacrypt</artifactId>
-			<version>3.0.8</version>
+			<artifactId>datacrypt-release</artifactId>
+			<version>4.2.3</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
@@ -148,6 +149,14 @@
 						</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<retryFailedDeploymentCount>3</retryFailedDeploymentCount>
+					<deployAtEnd>true</deployAtEnd>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	
@@ -169,14 +178,14 @@
 			<url>https://repository.mulesoft.org/nexus-domain/content/repositories/releases-ee/</url>
 		</repository> -->
 	</repositories>
-	<!-- <distributionManagement>
+	<distributionManagement>
 		
-          In order to publish to the Exchange make sure the the user id has 
-		  all the following scopes:
-		  - Exchange Contributor
-		  - Exchange Creator
-		  - Exchange Viewer
-		  - Design Center Developer
+			<!-- In order to publish to the Exchange make sure the the user id has 
+			all the following scopes:
+			- Exchange Contributor
+			- Exchange Creator
+			- Exchange Viewer
+			- Design Center Developer -->
 	    
 		<snapshotRepository>
 			<id>exchange-server</id>
@@ -197,5 +206,5 @@
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
 		</repository>
-	</distributionManagement> -->
+	</distributionManagement>
 </project>

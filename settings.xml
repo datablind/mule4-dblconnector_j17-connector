@@ -27,7 +27,8 @@
        please contact dblind mulesoftconnector@ztensor.com to get an access token. -->
         <server>
            <id>datablindrepo</id>
-           <username>~~~~~Token~~~~~</username>
+           <!--<username>~~~~~Token~~~~~</username> -->
+           <username>${dblrepo_username}</username>           
            <password>${dblrepo_password}</password>
        </server>
        <!-- <server>

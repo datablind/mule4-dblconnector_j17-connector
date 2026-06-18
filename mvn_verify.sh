@@ -37,6 +37,5 @@ fi
 
 mvn clean verify -U -e -s settings.xml \
   -Duri=${dataBlindUri} \
-  -DapiKey=${dataBlindApiKey} 
-#  -Ddblrepo_password=${dblrepo_password}
-#  -Ddblrepo_username=${dblrepo_username} \
+  -DapiKey=${dataBlindApiKey} \
+  -Ddblrepo_password=${dblrepo_password}

@@ -221,32 +221,31 @@ public class DBLOperations {
   }
 
   /**
-   * Reduces JSON data by filtering out sensitive information.
+   * Reduces JSON data by excluding sensitive information.
    * 
-   * <p>This operation provides data reduction capabilities by applying various filtering operations
-   * to sensitive fields within JSON documents. Supported operations include remove and retain. 
-   * Use remove operation to remove the sensitive fields from the JSON document. Use retain operation to 
-   * retain the nonsensitive fields in the JSON document. </p>
+   * <p>This operation provides data reduction capabilities by excluding sensitive fields from the JSON document.
+   * The operation supports two modes: remove and retain. Use remove mode to exclude sensitive fields from the JSON document.
+   * Use retain mode to include only nonsensitive fields in the JSON document. </p>
    * 
-   * <p>On success, the operation returns a JSON response with the filtered data in the response payload.</p>
+   * <p>On success, the operation returns a JSON response with the reduced data in the response payload.</p>
    * 
    * <p>On failure, the operation throws ModuleException with exception DATACRYPT_ERROR</p>
    * 
    * @param configuration The DataBlind configuration containing the encryption key
    * @param sensitiveFields String containing comma separated sensitive fields (e.g., "accounnt.creditCard,ssn,email")
-   * @param sensitiveJson The JSON document containing fields to be filtered
-   * @param operation The filtering operation to perform ("remove" or "retain")
+   * @param sensitiveJson The JSON document containing fields to be reduced
+   * @param operation The reduction operation to perform ("remove" or "retain")
    * @param overRideToken Optional override token, allows an authorized user to retrieve all data (default: "NOTOKEN")
    * @param passPhrase Optional passphrase, allows an authorized user to retrieve all data (default: "NOPASSPHRASE")
-   * @return InputStream containing the filtered JSON data
-   * @throws ModuleException if filtering fails due to invalid parameters, operation issues, or processing errors
+   * @return InputStream containing the reduced JSON data
+   * @throws ModuleException if reduction fails due to invalid parameters, operation issues, or processing errors
    * @see DBLConfiguration#getEncryptionKey()
    */
   @Execution(ExecutionType.CPU_INTENSIVE)
   @MediaType(value = APPLICATION_JSON, strict = false)
   @Alias("reduceJson")
   @Throws(DBLErrorProvider.class)
-  public InputStream filterJson(@Config DBLConfiguration configuration,
+  public InputStream reduceJson(@Config DBLConfiguration configuration,
 		  @DisplayName("Sensitive Fields") @Expression(ExpressionSupport.SUPPORTED) String sensitiveFields,
 		  @Content @DisplayName("Sensitive JSON") InputStream sensitiveJson,
 		  @DisplayName("Operation") @Expression(ExpressionSupport.SUPPORTED) String operation,
@@ -271,10 +270,67 @@ public class DBLOperations {
     catch (Exception e) {
     	//logger.error("Excception, filterJson failed {}", e.getMessage());
     	//logger.error(Arrays.toString(e.getStackTrace()));
+    	throw new ModuleException("ERR_103: Operation reduceJson failed due to " + e , DBLErrorType.DATACRYPT_ERROR);
+    }
+    return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
+  }
+
+  /**
+   * Filters JSON data by applying various filtering operations to sensitive fields.
+   * 
+   * <p>This operation provides data filtering capabilities by applying various filtering operations
+   * to sensitive fields within JSON documents. Supported operations include include and exclude. 
+   * Use include operation to include the sensitive fields in the JSON document. Use exclude operation to 
+   * exclude the nonsensitive fields in the JSON document. </p>
+   * 
+   * <p>On success, the operation returns a JSON response with the filtered data in the response payload.</p>
+   * 
+   * <p>On failure, the operation throws ModuleException with exception DATACRYPT_ERROR</p>
+   * 
+   * @param configuration The DataBlind configuration containing the encryption key
+   * @param filterConditions The JSON document containing the filter criteria
+   * @param sensitiveJson The JSON document containing sensitive fields
+   * @param overRideToken Optional override token, allows an authorized user to retrieve all data (default: "NOTOKEN")
+   * @param passPhrase Optional passphrase, allows an authorized user to retrieve all data (default: "NOPASSPHRASE")
+   * @return InputStream containing the filtered JSON data
+   * @throws ModuleException if filtering fails due to invalid parameters, operation issues, or processing errors
+   * @see DBLConfiguration#getEncryptionKey()
+   */
+  @Execution(ExecutionType.CPU_INTENSIVE)
+  @MediaType(value = APPLICATION_JSON, strict = false)
+  @Alias("filterJson")
+  @Throws(DBLErrorProvider.class)
+  public InputStream filterJson(@Config DBLConfiguration configuration,
+		  @DisplayName("Filter Conditions") @Expression(ExpressionSupport.SUPPORTED) String filterConditions,
+		  @Content @DisplayName("Sensitive JSON") InputStream sensitiveJson,
+  		  @DisplayName("OverRide Token") 
+  		  @Expression(ExpressionSupport.SUPPORTED) 
+  		  @Optional(defaultValue = "NOTOKEN")
+  		  @Placement(order = 1, tab="Advanced") String overRideToken, 
+  		  @DisplayName("Pass Phrase") 
+  	  	  @Expression(ExpressionSupport.SUPPORTED) 
+  		  @Password 
+  		  @Optional(defaultValue = "NOPASSPHRASE")
+  		  @Placement(order = 2, tab="Advanced") String passPhrase) {
+	  String response = DEFAULT_RESPONSE;
+	  logger.info("DataBlind ReduceJson {}", VERSION_TAG);    	
+    try {    
+        String sensitiveJsonString = new String(sensitiveJson.readAllBytes(), StandardCharsets.UTF_8);
+        KeyContext kc = new KeyContext(DEFAULT_KEY_RING_ID, DEFAULT_KEY_ID, DEFAULT_KEY_VERSION, configuration.getEncryptionKey().getBytes());
+        JsonDataCrypt jsonDataCrypt = new JsonDataCrypt(kc);
+    	  response = jsonDataCrypt.filterJson( filterConditions, sensitiveJsonString, overRideToken, passPhrase);
+
+    }
+    catch (Exception e) {
+    	//logger.error("Excception, filterJson failed {}", e.getMessage());
+    	//logger.error(Arrays.toString(e.getStackTrace()));
     	throw new ModuleException("ERR_103: Operation filterJson failed due to " + e , DBLErrorType.DATACRYPT_ERROR);
     }
     return new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
   }
+
+
+
 
   /**
    * Decrypts previously encrypted fields within a JSON document.
