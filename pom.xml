@@ -5,7 +5,7 @@
 	<!-- <groupId>org.ztensor.connectors</groupId> -->
 	<groupId>acda9d4d-1bfb-4b44-9b48-6f8f49157bbd</groupId>
 	<artifactId>mule-datablind-connector</artifactId>
-	<version>1.4.3</version>
+	<version>1.4.4</version>
 	<packaging>mule-extension</packaging>
 	<name>DataBlind Connector - Mule 4</name>
 
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>com.ztensor</groupId>
 			<artifactId>datacrypt-release</artifactId>
-			<version>4.2.3</version>
+			<version>4.2.4</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
