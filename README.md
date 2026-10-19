@@ -227,7 +227,8 @@ In some rare scenarios, the operation can not be completed and an error is not t
 | | `FE:SSN` | Social Security numbers |
 | | `FE:CurrencyAmount` | Currency amounts |
 | | `FE:EmailAddress` | Email addresses |
-| | `FE:WebUrl` | Web URLs |
+| | `FE:WebURL` | Web URLs |
+| | `FE:VIN` | Vehicle Identification Number |
 | **Other** | `AES:CBC` | AES-128 CBC encryption (non-format-preserving) |
 | **Masking** | `MASK:X` | Replaces each character with X (e.g. MASK:* → ****) |
 
